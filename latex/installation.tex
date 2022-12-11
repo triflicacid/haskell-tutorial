@@ -1,0 +1,28 @@
+\section{Installation}
+\label{sec:installation}
+
+Link: \url{https://www.haskell.org/ghcup/}
+
+I used GHCup to install several components of the Haskell toolchain.
+
+\subsection{The Haskell Toolchain}
+The Haskell Toolchain consists of several useful tools for Haskell compilatio and development:
+
+\begin{itemize}
+  \item \textbf{GHC} - the Glasgow Haskell Compiler;
+  \item \textbf{cabal-install} - Cabal installation tool for managing Haskell software;
+  \item \textbf{Stack} - a cross-platform proram for developing Haskell projects;
+  \begin{itemize}
+    \item \textbf{Msys2} - provides a UNIX shell and environment which is necessary for executing configuration scripts.
+  \end{itemize}
+  \item \textbf{haskell-language-server} - a language server which may be integrated into an IDE;
+\end{itemize}
+
+\subsection{Command}
+The command to use on Windows (in a normal Powershell instance) is
+
+\input{latex/latex-listings-powershell.tex}
+
+\begin{lstlisting}[language=PowerShell]
+  Set-ExecutionPolicy Bypass -Scope Process -Force;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; try { Invoke-Command -ScriptBlock ([ScriptBlock]::Create((Invoke-WebRequest https://www.haskell.org/ghcup/sh/bootstrap-haskell.ps1 -UseBasicParsing))) -ArgumentList $true } catch { Write-Error $_ }
+\end{lstlisting}

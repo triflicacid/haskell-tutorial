@@ -1,0 +1,36 @@
+\documentclass[10pt,a4paper,oneside]{article}
+
+\usepackage[margin=2.5cm,top=3cm]{geometry}
+\usepackage{amsmath} %For both in-line and equation mode
+\numberwithin{equation}{section} %Numbering of our equations per section
+\usepackage{algorithm, algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{setspace}
+\usepackage[hyphens]{url}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{appendix}
+\usepackage{listings}
+
+\usepackage[hidelinks]{hyperref}
+
+\fancyhf{}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.2pt}
+\pagenumbering{roman}
+\fancyfoot[c]{\thepage}
+
+\begin{document}
+
+\include{latex/frontpage}
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+\fancyfoot[c]{Page \thepage \hspace{1pt} of \pageref{LastPage}}
+
+\include{latex/installation}
+
+\end{document}
