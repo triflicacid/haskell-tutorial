@@ -1,11 +1,22 @@
-\section{Installation}
-\label{sec:installation}
+\section{Introduction}
+\label{sec:introduction}
+Haskell is a purely functional programming language. The following sections will give a brief overview of Haskell, and how to install it.
 
+\subsection{Language Overview}
+In Haskell, everything is a \textit{pure} function - that is, they abide by the Mathematical definition of a function; they map inputs to a unique output.
+
+Data is immutable, meaning that our data types cannot be changed in-place. Combined, this means that there a re few or no side-effects from functions, which make programming more simple.
+
+Haskell is declarative, meaning that the program defines what the issue is, rather than simply giving an algorithm to solve a problem.
+
+Functional programs are easier to verify as we can use maths to verify an algorithm.
+
+\subsection{Installation}
 Link: \url{https://www.haskell.org/ghcup/}
 
 I used GHCup to install several components of the Haskell toolchain.
 
-\subsection{The Haskell Toolchain}
+\subsubsection{The Haskell Toolchain}
 The Haskell Toolchain consists of several useful tools for Haskell compilatio and development:
 
 \begin{itemize}
@@ -18,10 +29,10 @@ The Haskell Toolchain consists of several useful tools for Haskell compilatio an
   \item \textbf{haskell-language-server} - a language server which may be integrated into an IDE;
 \end{itemize}
 
-\subsection{Command}
+\subsubsection{Install Command}
 The command to use on Windows (in a normal Powershell instance) is
 
-\input{latex/latex-listings-powershell.tex}
+\input{latex/assets/latex-listings-powershell.tex}
 
 \begin{lstlisting}[language=PowerShell]
   Set-ExecutionPolicy Bypass -Scope Process -Force;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; try { Invoke-Command -ScriptBlock ([ScriptBlock]::Create((Invoke-WebRequest https://www.haskell.org/ghcup/sh/bootstrap-haskell.ps1 -UseBasicParsing))) -ArgumentList $true } catch { Write-Error $_ }

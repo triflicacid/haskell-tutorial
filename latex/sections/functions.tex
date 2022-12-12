@@ -1,0 +1,173 @@
+\section{Functions}
+
+Functions are defined to map a value from an input set - the \textit{domain} - into an output set - \textit{the co-domain}. Every output of the function is contained in a subset of the co-domain, called the \textit{range}. \textbf{Pure} mathematical functions must be able to map every value from the domain, and each input value must map to only one output value.
+
+In Haskell, occurences of functions are expanded into their RHS.
+
+\subsection{Function Definition}
+
+Functions are defined by providing its name, a list of arguments, and setting it equal to an expression.
+
+\begin{center}
+  \texttt{\textcolor{blue}{name} arg1 arg2 \ldots argn = <expr>}
+\end{center}
+
+The arguments may be set to constants, or may be given a name to accept a variable value.
+
+The type of a function is specified by an arrow (\texttt{->}) seperated list of its argument types and its return type:
+
+\begin{center}
+  \texttt{\blue{func} :: \red{type$_1$} -> \red{type$_2$} -> \ldots -> \red{type$_n$} -> \red{type$_\text{return}$}}
+\end{center}
+
+For an example, take a function which returns the sum of the elements of an array:
+
+\begin{lstlisting}[language=haskell]
+  sum :: [a] -> Int -- Takes an array of arbitrary type and returns an integer
+  sum [] = 0 -- Define the sum of an empty array to be zero
+  sum (h:t) = h + sum t -- Define the sum of an array to be the head plus the sum of the tail
+\end{lstlisting}
+
+\subsubsection{Infix Functions}
+
+A good example of infix functions are operators such as \texttt{+}. Functions which take two arguments may be writen between the arguments instead.
+
+For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \blue{add} 7} are equivalent.
+
+\subsection{Function Application}
+
+A function is applied (called) to some arguments as follows:
+
+\begin{center}
+  \texttt{\blue{name} arg1 arg2 \ldots argn}
+\end{center}
+
+For example, consider the function \texttt{\blue{in\_range} x min max = x >= min \&\& x < max}, an implementation of $x \in [min, max)$.
+
+Then, \texttt{\blue{in\_range} 3 0 5} would evaluate to True, but \texttt{\blue{in\_range} 5 0 5} would evaluate to False.
+
+\subsection{Name Binding}
+Two methods are provided to bind a symbol to a value in a function: \texttt{let} and \texttt{where}.
+
+\subsubsection{\texttt{let}}
+Syntax:
+\begin{lstlisting}[language=haskell]
+  let
+    <symbol> = <expr>
+    <symbol2> = <expr2>
+    ...
+  in
+  <main_expr>
+\end{lstlisting}
+
+For example, re-define \texttt{\blue{in\_range}} as follows:
+
+\begin{lstlisting}[language=haskell]
+  in_range x min max =
+    let
+      in_lb = min <= x
+      in_ub = max > x
+    in
+    in_lb && in_ub
+\end{lstlisting}
+
+\subsubsection{\texttt{where}}
+Syntax:
+
+\begin{lstlisting}[language=haskell]
+  <main_expr>
+  where
+    <symbol> = <expr>
+    <symbol2> = <expr2>
+    ...
+\end{lstlisting}
+
+For example, re-define \texttt{\blue{in\_range}} as follows:
+
+\begin{lstlisting}[language=haskell]
+  in_range x min max = in_lb && in_ub
+    where
+      in_lb = min <= x
+      in_ub = max > x
+\end{lstlisting}
+
+\subsection{Recursion}
+Recursion is the process of a function calling itself. Recursion requires a \textit{base case} to stop the function recursing indefinitely.
+
+There are many ways to implement recursion, which will be demonstrated using the \textit{factorial}, defined as
+\[n! = n \cdot (n - 1) \cdot \ldots \cdot 1 = \prod_{k = 1}^{n} k\]
+
+\subsubsection{Defined Base Case}
+We can hard-code the case where the function is called with the base case:
+
+\begin{lstlisting}[language=haskell]
+  fac 1 = 1
+  fac n = n * fib (n-1) 
+\end{lstlisting}
+
+\subsubsection{If-Else Expression}
+We can use the if-else expression:
+
+\begin{center}
+  \texttt{\blue{if} <expr> \blue{then} <ifTrue> \blue{else} <ifFalse>}
+\end{center}
+
+For example,
+
+\begin{lstlisting}[language=haskell]
+  fac n = if n <= 1 then 1 else n * fac (n-1)
+\end{lstlisting}
+
+\subsubsection{Guards}
+Guards are similar to piece-wise functions.
+
+\begin{lstlisting}[language=haskell]
+<main_expr>
+  | <expr> = <value>
+  | <expr2> = <value2>
+  ...
+  | otherwise = <default_value>
+\end{lstlisting}
+Where \texttt{<expr>} is a boolean expression. If \texttt{<expr>} is matches, then \texttt{<value>} will be returned. If none is matched, the \texttt{\blue{otherwise}} is returned.
+
+For example,
+
+\begin{lstlisting}[language=haskell]
+  fac n =
+    | n <= 1    = 1
+    | otherwise = n * fac (n-1)
+\end{lstlisting}
+
+\subsubsection{Accumulators}
+In this example, we define an auxiliary function \texttt{\blue{aux}} inside \texttt{\blue{fac}} to calculate the the factorial
+
+\begin{lstlisting}[language=haskell]
+  fac n = aux n 1
+    where
+      aux n acc =
+        | n <= 1    = acc
+        | otherwise = aux (n-1) (n*acc)
+\end{lstlisting}
+
+This is called \textit{tail recursion}. This is because the final result of \texttt{\blue{aux}} is the result we want, meaning that it is much more memory efficient. A good compiler could even unwind this into a non-recursive imperative approach using a loop. (For more insight, see \url{https://www.youtube.com/watch?v=_JtPhF8MshA}.)
+
+Normal recursion (using an above definition of \texttt{\blue{fac}}):
+\begin{verbatim}
+fac 4
+= 4 * fac 3
+= 4 * (3 * fac 2)
+= 4 * (3 * (2 * fac 1))
+= 4 * (3 * (2 * 1))
+= 4 * (3 * 2)
+= 4 * 6
+= 24
+\end{verbatim}
+
+Tail recursion (using the definition in this sub-section):
+\begin{verbatim}
+fac 4
+= aux 3 4
+= aux 2 12
+= aux 1 24
+= 24
+\end{verbatim}

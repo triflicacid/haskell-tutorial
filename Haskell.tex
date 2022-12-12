@@ -13,8 +13,13 @@
 \usepackage{tabularx}
 \usepackage{appendix}
 \usepackage{listings}
+\usepackage{verbatim}
 
 \usepackage[hidelinks]{hyperref}
+
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
 
 \fancyhf{}
 \pagestyle{fancy}
@@ -24,13 +29,16 @@
 
 \begin{document}
 
-\include{latex/frontpage}
+\include{latex/sections/frontpage}
 \tableofcontents
 \newpage
 
 \pagenumbering{arabic}
 \fancyfoot[c]{Page \thepage \hspace{1pt} of \pageref{LastPage}}
 
-\include{latex/installation}
+\include{latex/sections/introduction.tex}
+
+\include{latex/sections/variables.tex}
+\include{latex/sections/functions.tex}
 
 \end{document}
