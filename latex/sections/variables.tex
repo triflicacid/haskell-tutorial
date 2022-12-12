@@ -13,3 +13,48 @@ Variable types are \textit{inferred}. To explicitly assign variables a type,
 \end{center}
 
 In GHCI, the type of a symbol may be retriesed by \texttt{:t \blue{name}}.
+
+\subsection{Local Name Binding}
+Two methods are provided to bind a symbol to a value in a local scope: \texttt{let} and \texttt{where}. Each follow a ``main'' expression.
+
+\subsubsection{\texttt{let}}
+Syntax:
+\begin{lstlisting}[language=haskell]
+  let
+    <symbol> = <expr>
+    <symbol2> = <expr2>
+    ...
+  in
+  <main_expr>
+\end{lstlisting}
+
+For example, re-define \texttt{\blue{in\_range}} as follows:
+
+\begin{lstlisting}[language=haskell]
+  in_range x min max =
+    let
+      in_lb = min <= x
+      in_ub = max > x
+    in
+    in_lb && in_ub
+\end{lstlisting}
+
+\subsubsection{\texttt{where}}
+Syntax:
+
+\begin{lstlisting}[language=haskell]
+  <main_expr>
+  where
+    <symbol> = <expr>
+    <symbol2> = <expr2>
+    ...
+\end{lstlisting}
+
+For example, re-define \texttt{\blue{in\_range}} as follows:
+
+\begin{lstlisting}[language=haskell]
+  in_range x min max = in_lb && in_ub
+    where
+      in_lb = min <= x
+      in_ub = max > x
+\end{lstlisting}

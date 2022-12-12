@@ -1,0 +1,58 @@
+\section{Collections}
+
+Haskell has two collections: lists, and tuples.
+
+\subsection{Lists}
+A \textit{mutable} collection of elements of the \textit{same type}. Every elements has an ordinal.
+
+A list of type \texttt{\red{type}} has the given type signature
+\begin{center}
+  \texttt{\blue{name} :: [\red{type}]}
+\end{center}
+
+\subsubsection{Construction}
+A list may be greated by the following constructor:
+\begin{itemize}
+  \item Using square brackets: \texttt{[$x_1$, $x_2$, \ldots, $x_n$]}
+  \item Using the prepend opeator: \texttt{$x_1:x_2:\ldots:x_n:$[]}. With the syntax of \texttt{x:list}, it prepends \texttt{x} to the list \texttt{list}.
+\end{itemize}
+
+\subsubsection{Pre-defined functions}
+Many pre-defined functions for lists are defined in the \texttt{Data.List} module.
+
+\paragraph{General Functions} These functions work on a list of any type, namely \texttt{[a]}.
+\begin{itemize}
+  \item \texttt{\blue{head} <list>}. This function returns the head ($x_1$) of the list. Example: \texttt{\blue{head} [1,2,3]} returns \texttt{1}.
+  \item \texttt{\blue{tail} <list>}. This function returns the tail of the list. Example: \texttt{\blue{tail} [1,2,3]} returns \texttt{[2,3]}.
+  \item \texttt{\blue{length} <list>}. This function returns the length of the list. Example: \texttt{\blue{length} [1,2,3]} returns \texttt{3}.
+  \item \texttt{\blue{init} <list>}. This function returns the list without the last element. Example: \texttt{\blue{init} [1,2,3]} returns \texttt{[1,2]}.
+  \item \texttt{\blue{null} <list>}. This function returns whether the list is empty. Example: \texttt{\blue{null} [1,2,3]} returns \texttt{\red{False}}.
+\end{itemize}
+
+\paragraph{Boolean Functions} These functions are of the type \texttt{\blue{fn} :: [\red{Bool}] -> \red{Bool}}
+\begin{itemize}
+  \item \texttt{\blue{and} <list>}. This functions returns \texttt{\red{True}} if every elements in \texttt{<list>} is \texttt{\red{True}}.
+  \item \texttt{\blue{or} <list>}. This functions returns \texttt{\red{True}} if at least one element in \texttt{<list>} is \texttt{\red{True}}.
+\end{itemize}
+
+\subsubsection{List Comprehension}
+List comprehension can be used to transform one or more lists according to a predicate. Syntax:
+\begin{center}
+  \texttt{[ <gen> | <elem> <- <list>, \ldots, <guard>, \ldots ]}
+\end{center}
+Examples:
+\begin{itemize}
+  \item \texttt{[ 2*x | x <- [1,2,3] ]} generates \texttt{[2,4,6]}
+  \item \texttt{[ x\^{}2 | x <- [1,2,3], x > 1 ]} generates \texttt{[4,9]}
+  \item \texttt{[ (x,y) | x <- [1,2,3], y <- [`a',`b'] ]} generates
+  
+  \texttt{[(1,`a'),(1,`b'),(2,`a'),(2,`b'),(3,`a'),(3,`b')]}
+\end{itemize}
+
+\subsection{Tuples}
+An \textit{immutable} collection of elements of \textit{different types}.
+
+A tuple has the signature
+\begin{center}
+  \texttt{(x,y) :: (type$_x$, type$_y$)}
+\end{center}

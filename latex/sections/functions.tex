@@ -46,51 +46,6 @@ For example, consider the function \texttt{\blue{in\_range} x min max = x >= min
 
 Then, \texttt{\blue{in\_range} 3 0 5} would evaluate to True, but \texttt{\blue{in\_range} 5 0 5} would evaluate to False.
 
-\subsection{Name Binding}
-Two methods are provided to bind a symbol to a value in a function: \texttt{let} and \texttt{where}.
-
-\subsubsection{\texttt{let}}
-Syntax:
-\begin{lstlisting}[language=haskell]
-  let
-    <symbol> = <expr>
-    <symbol2> = <expr2>
-    ...
-  in
-  <main_expr>
-\end{lstlisting}
-
-For example, re-define \texttt{\blue{in\_range}} as follows:
-
-\begin{lstlisting}[language=haskell]
-  in_range x min max =
-    let
-      in_lb = min <= x
-      in_ub = max > x
-    in
-    in_lb && in_ub
-\end{lstlisting}
-
-\subsubsection{\texttt{where}}
-Syntax:
-
-\begin{lstlisting}[language=haskell]
-  <main_expr>
-  where
-    <symbol> = <expr>
-    <symbol2> = <expr2>
-    ...
-\end{lstlisting}
-
-For example, re-define \texttt{\blue{in\_range}} as follows:
-
-\begin{lstlisting}[language=haskell]
-  in_range x min max = in_lb && in_ub
-    where
-      in_lb = min <= x
-      in_ub = max > x
-\end{lstlisting}
-
 \subsection{Recursion}
 Recursion is the process of a function calling itself. Recursion requires a \textit{base case} to stop the function recursing indefinitely.
 
@@ -144,7 +99,7 @@ In this example, we define an auxiliary function \texttt{\blue{aux}} inside \tex
 \begin{lstlisting}[language=haskell]
   fac n = aux n 1
     where
-      aux n acc =
+      aux n acc
         | n <= 1    = acc
         | otherwise = aux (n-1) (n*acc)
 \end{lstlisting}
