@@ -126,3 +126,84 @@ fac 4
 = aux 1 24
 = 24
 \end{verbatim}
+
+\subsection{Anonymous Functions}
+Syntax:
+\begin{center}
+  \texttt{(\symbol{92}<args> -> <expr>)}
+\end{center}
+
+Some examples:
+\begin{itemize}
+  \item \texttt{(\symbol{92}x -> x+1) 2} returns \texttt{3}.
+  \item \texttt{(\symbol{92}x y z -> x+y+z) 1 2 3} returns \texttt{6}.
+\end{itemize}
+Anonymous functions may be bound to names.
+
+\subsection{Higher Order Functions}
+Higher order functions are functions that take other functions as arguments.
+
+For example, a function which takes another function and applies it to an argument:
+\begin{lstlisting}[language=haskell]
+  app :: (a -> b) -> a -> b
+  app f x = f x
+\end{lstlisting}
+A synonym of such a function is the dollar (\texttt{\$}) operator: \texttt{(\$) :: (a -> b) -> a -> b}.
+
+\subsubsection{Useful Higher Order Functions}
+\begin{itemize}
+  \item \texttt{\blue{map} :: (a -> b) -> [a] -> [b]} applies a function to every element on an array.
+  \[L' = \{f(x) : x \in L\}\]
+  
+  Example: \texttt{\blue{map} (\symbol{92}x -> x\string^2) [1,2,3]} returns \texttt{[1,4,9]}.
+  \item \texttt{\blue{filter} :: (a -> \red{Bool}) -> [a] -> [a]} filters the list on a predicate.
+  \[L' = \{x \in L : P(x)\}\]
+  
+  Example: \texttt{\blue{filter} (\symbol{92}x -> mod x 2 == 0) [1,2,3,4,5]} returns \texttt{[2,4]}.
+  \item \texttt{\blue{fold} :: (a -> b -> b) -> b -> [a] -> b} processes a list with some function to produce a single value, starting at a given value.
+  
+  In Haskell, \texttt{\blue{fold}} doesn't exist, but rather \texttt{\blue{foldr}} and \texttt{\blue{foldl}} which start folding at either end of the list respectively.
+  \[\texttt{\blue{foldr}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = x_1\; (op)\; x_2\; (op)\; \ldots\; (op)\; x_n\; (op)\; a\]
+  \[\texttt{\blue{foldl}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = a\; (op)\; x_n\; (op)\; x_{n-1}\; (op)\; \ldots\; (op)\; x_1\]
+
+  Example: \texttt{\blue{foldr} (+) 0 [1,2,3,4,5]} returns \texttt{15}.
+\end{itemize}
+
+\subsection{Currying}
+The principle behind currying is that given
+\begin{center}
+  \texttt{\blue{f} :: a -> b -> c -> d}
+\end{center}
+We could re-write this as
+\begin{center}
+  \texttt{\blue{f'} :: a -> (b -> (c -> d))}
+\end{center}
+
+For example, one could define a function \texttt{\blue{add}} in multiple ways:
+\begin{lstlisting}[language=haskell]
+  add x y = x + y
+  add x = (\y -> x + y)
+  add = (\x -> (\y -> x + y))
+\end{lstlisting}
+
+\subsubsection{Partial Function Application}
+Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function; \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}.
+
+A good example would be using \texttt{\blue{map}}.
+\begin{center}
+  \texttt{\blue{doubleList} = \blue{map} (\symbol{92}x -> x * 2)}
+\end{center}
+
+\subsection{Function Composition}
+Function composition is a way to combine functions. For this, we use the dot (\texttt{.}) operator.
+\begin{center}
+  \texttt{(.) :: (b -> c) -> (a -> b) -> (a -> c)}
+\end{center}
+Then, \texttt{(f.g)} is equivalent to \texttt{(\blue{\symbol{92}}x -> f (g x))}.
+
+For example, all three definitions of \texttt{\blue{descSort}} are equivalent:
+\begin{lstlisting}[language=haskell]
+  descSort = reverse . sort
+  descSort = (\x -> reverse (sort x))
+  descSort = reverse (sort x)
+\end{lstlisting}
