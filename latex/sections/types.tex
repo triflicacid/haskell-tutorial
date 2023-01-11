@@ -1,0 +1,57 @@
+\section{Types}
+
+Every expression in Haskell has a type. Types are inferred, even when given explicitly.
+
+Types always begin with an UPPERCASE letter.
+
+\subsection{Variable Types}
+
+\begin{center}
+  \texttt{var :: \red{type}}
+\end{center}
+
+\subsubsection{Lists}
+
+To define a list of a \texttt{\red{type}}, one would write \texttt{[\red{type}]}. This may be nested.
+
+\subsection{Function Types}
+
+\begin{center}
+  \texttt{func :: \red{type1} -> ... -> \red{typeN} -> \red{ret\_type}}
+\end{center}
+
+Where the function \texttt{func} takes $n$ arguments of types \texttt{\red{type1}, ..., \red{typeN}} and returns \texttt{\red{ret\_type}}.
+
+\subsubsection{Type Variables}
+
+Type variables may be used where any type would be permissable and must be lowercase. For example,
+
+\begin{center}
+  \texttt{id :: a -> a}
+
+  \texttt{id x = x}
+\end{center}
+
+\subsection{Type Aliasing}
+This doesn't define a new datatype, but rather an alias for another type.
+\begin{center}
+  \texttt{\blue{type} Pos = \red{type}}
+\end{center}
+
+A common example is using a tuple e.g. \texttt{\blue{type} Pos = (\red{Int}, \red{Int})}. The type name need not be stated in pattern matching.
+
+\subsection{Defining Datatypes}
+The \blue{data} keyword is used to define a new datatype; unlike the above, these are entirely custom.
+
+This may be done using the \texttt{data} keyword:
+\begin{center}
+  \texttt{\blue{data} Name = \red{Constructor1} <args> | \ldots}
+\end{center}
+where \texttt{<args>} are the \textit{types} of each argument, not literals.
+
+\subsubsection{Examples}
+\begin{itemize}
+  \item \url{expr.hs} - A program to build and evaluate expressions;
+  \item \url{tree.hs} - A representation of a tree structure;
+  \item \url{nat-num.hs} - A definition of natural numbers using the successor function;
+\end{itemize}

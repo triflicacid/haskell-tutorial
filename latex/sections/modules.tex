@@ -1,0 +1,44 @@
+\section{Modules}
+
+In Haskell, each file is a module. Hence, each file (other than the entry file) must begin with a module declaration:
+
+\begin{center}
+  \texttt{\blue{module} \textit{filename} [(n1, n2, ...)] \blue{where}}
+\end{center}
+
+By default, every symbol is exported. If \texttt{(n1, n2, ...)} is included, only symbols \texttt{n1}, \texttt{n2} etc. are exported.
+
+\subsection{Importing}
+
+To import a module, use an import statement:
+
+\begin{center}
+  \texttt{\blue{import} \textit{module} [(n1, n2, ...)]}
+\end{center}
+
+By default, every symbol exported by \texttt{module} is imported. If \texttt{(n1, n2, ...)} is included, only symbols \texttt{n1}, \texttt{n2} etc. are imported.
+
+To import \url{Animals.hs} one would write \texttt{\blue{import} Animals}.
+To import \url{Farm/Tractor.hs} one would write \texttt{\blue{import} Farm.Tractor}.
+
+Once imported, symbols may be used freely. For example, if the function \texttt{double} is imported, to reference it we would write \texttt{double}. However, if two different definitions for \texttt{double} are imported, we must use its full name e.g. \texttt{Module.double}.
+
+\subsubsection{Qualified Imports}
+
+Syntax:
+
+\begin{center}
+  \texttt{\blue{import qualified} \textit{module} [(...)]}
+\end{center}
+
+This forces the module name to precede any symbols imported. In the example above, \texttt{Module.double} \textbf{must} be used.
+
+\subsubsection{Aliased Imports}
+
+Syntax:
+
+\begin{center}
+  \texttt{\blue{import} \textit{module} [(...)] \blue{as} \textit{alias}}
+\end{center}
+
+Using the above example, now, instead of writing \texttt{Module.double} one would now write \texttt{Alias.double}.

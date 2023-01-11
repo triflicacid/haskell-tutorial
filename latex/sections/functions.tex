@@ -32,7 +32,22 @@ For an example, take a function which returns the sum of the elements of an arra
 
 A good example of infix functions are operators such as \texttt{+}. Functions which take two arguments may be writen between the arguments instead.
 
-For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \blue{add} 7} are equivalent.
+For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \textasciigrave\blue{add}\textasciigrave 7} are equivalent.
+
+To reference the function defined by an operator i.e. \texttt{+}, surround it with parenthesis i.e. \texttt{(+)}.
+
+\subsubsection{Pattern Matching}
+
+Parameters of functions may be matched against a pattern. Note that order matters: more specific patterns should be defined first, with general cases last.
+\begin{itemize}
+  \item Accept any value by using a symbol e.g. \texttt{f x = ...}.
+  \item Accept a certain value e.g. \texttt{f 0 = ...}, \texttt{g [] = ...}
+  \item List splicing using \texttt{(x:xs)} where \texttt{x} is the head, \texttt{xs} is the tail.
+  \item Accept and extract a custom types. E.g., say we had \texttt{\blue{type} Pos = (Int, Int)}, we would define \texttt{getX (x, y) = x}.
+  \item Accept and extract a custom datatype. E.g., say we had \texttt{\blue{data} Num = Zero | Succ Num}. We could then define \texttt{f Zero = ...} and \texttt{f (Succ n) = ...}.
+\end{itemize}
+
+Pattern matching may also be done using \texttt{\blue{case} ... \blue{of} ...} construct.
 
 \subsection{Function Application}
 
@@ -127,10 +142,10 @@ fac 4
 = 24
 \end{verbatim}
 
-\subsection{Anonymous Functions}
+\subsection{Lambdas}
 Syntax:
 \begin{center}
-  \texttt{(\symbol{92}<args> -> <expr>)}
+  \texttt{(\blue{\symbol{92}}<args> -> <expr>)}
 \end{center}
 
 Some examples:
@@ -138,7 +153,7 @@ Some examples:
   \item \texttt{(\symbol{92}x -> x+1) 2} returns \texttt{3}.
   \item \texttt{(\symbol{92}x y z -> x+y+z) 1 2 3} returns \texttt{6}.
 \end{itemize}
-Anonymous functions may be bound to names.
+Lambdas may be bound to names.
 
 \subsection{Higher Order Functions}
 Higher order functions are functions that take other functions as arguments.
@@ -187,7 +202,7 @@ For example, one could define a function \texttt{\blue{add}} in multiple ways:
 \end{lstlisting}
 
 \subsubsection{Partial Function Application}
-Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function; \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}.
+Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function; \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}. This is known as a \textit{section}.
 
 A good example would be using \texttt{\blue{map}}.
 \begin{center}
