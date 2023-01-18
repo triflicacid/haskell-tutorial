@@ -27,6 +27,8 @@ Many pre-defined functions for lists are defined in the \texttt{Data.List} modul
   \item \texttt{\blue{length} <list>}. This function returns the length of the list. Example: \texttt{\blue{length} [1,2,3]} returns \texttt{3}.
   \item \texttt{\blue{init} <list>}. This function returns the list without the last element. Example: \texttt{\blue{init} [1,2,3]} returns \texttt{[1,2]}.
   \item \texttt{\blue{null} <list>}. This function returns whether the list is empty. Example: \texttt{\blue{null} [1,2,3]} returns \texttt{\red{False}}.
+  \item \texttt{\blue{take} <n> <list>}. This function returns a list of the first $n$ elements of the list. Example: \texttt{\blue{take} 2 [1,2,3,4,5]} returns \texttt{[1,2]}.
+  \item \texttt{\blue{drop} <n> <list>}. This function returns a list excluding the first $n$ elements of the list. Example: \texttt{\blue{drop} 2 [1,2,3,4,5]} returns \texttt{[3,4,5]}.
 \end{itemize}
 
 \paragraph{Boolean Functions} These functions are of the type \texttt{\blue{fn} :: [\red{Bool}] -> \red{Bool}}
@@ -49,10 +51,18 @@ Examples:
   \texttt{[(1,`a'),(1,`b'),(2,`a'),(2,`b'),(3,`a'),(3,`b')]}
 \end{itemize}
 
+\subsubsection{Ranges}
+Generate ranges in Haskell using the ellipse \text{..}:
+\begin{center}
+  \texttt{[<start> .. <end>]}
+\end{center}
+
+E.g. \texttt{[1 .. 5] = [1,2,3,4,5]}. \texttt{<end>} may be omitted to generate an infinite list e.g. \texttt{[1 ..] = [1,2,3,...]}
+
 \subsection{Tuples}
 An \textit{immutable} collection of elements of \textit{different types}.
 
 A tuple has the signature
 \begin{center}
-  \texttt{(x,y) :: (type$_x$, type$_y$)}
+  \texttt{(x,y,...) :: (type$_x$, type$_y$, ...)}
 \end{center}

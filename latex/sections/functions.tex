@@ -43,6 +43,7 @@ Parameters of functions may be matched against a pattern. Note that order matter
   \item Accept any value by using a symbol e.g. \texttt{f x = ...}.
   \item Accept a certain value e.g. \texttt{f 0 = ...}, \texttt{g [] = ...}
   \item List splicing using \texttt{(x:xs)} where \texttt{x} is the head, \texttt{xs} is the tail.
+  \item Tuple unpacking e.g. \texttt{(Int,Int)} could be unpacked using \texttt{(x,y)}.
   \item Accept and extract a custom types. E.g., say we had \texttt{\blue{type} Pos = (Int, Int)}, we would define \texttt{getX (x, y) = x}.
   \item Accept and extract a custom datatype. E.g., say we had \texttt{\blue{data} Num = Zero | Succ Num}. We could then define \texttt{f Zero = ...} and \texttt{f (Succ n) = ...}.
 \end{itemize}
@@ -200,6 +201,21 @@ For example, one could define a function \texttt{\blue{add}} in multiple ways:
   add x = (\y -> x + y)
   add = (\x -> (\y -> x + y))
 \end{lstlisting}
+
+\subsection{Currying \& Uncurrying}
+Let's illustrate these terms by defining functions,
+
+\begin{center}
+  \texttt{\blue{curry} :: ((a,b) -> c) -> a -> b -> c}
+
+  \texttt{\blue{curry} f x y = f (x,y)}
+\end{center}
+
+\begin{center}
+  \texttt{\blue{uncurry} :: (a -> b -> c) -> (a,b) -> c}
+
+  \texttt{\blue{uncurry} f (x,y) = f x y}
+\end{center}
 
 \subsubsection{Partial Function Application}
 Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function; \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}. This is known as a \textit{section}.
