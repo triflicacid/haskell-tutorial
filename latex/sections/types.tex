@@ -32,6 +32,8 @@ Type variables may be used where any type would be permissable and must be lower
   \texttt{id x = x}
 \end{center}
 
+This is called ``parametric polymorphism''.
+
 \subsection{Type Aliasing}
 This doesn't define a new datatype, but rather an alias for another type.
 \begin{center}
@@ -43,7 +45,7 @@ A common example is using a tuple e.g. \texttt{\blue{type} Pos = (\red{Int}, \re
 \subsection{Type Classes}
 Type classes may be used to restrict the types a polymorphic function may take. This is useful if we would like to use features in a polymorphic function that may only be available to certain types.
 
-To impose a constraint on variable \texttt{a} in a function \texttt{f}: \texttt{f :: (\texttt<TypeClass> a, ...) => ...}.
+To impose a constraint on variable \texttt{a} in a function \texttt{f}: \texttt{f :: (\texttt<TypeClass> a, ...) => ...}. This is called ``ad-hoc polymorphism''.
 
 \subsubsection{Definition}
 A type class definition begins with
@@ -71,17 +73,34 @@ Common type classes include:
   \item \texttt{\red{Enum}} -- types which may be enumerated i.e. \texttt{succ, pred, ...} are defined;
 \end{itemize}
 
+\subsubsection{Instances}
+Intances allow us to write functions which make use of type classes. sSyntax:
+
+\texttt{\red{instance} (<constraints>) => <typeClass> <value> \red{where}} followed by a list of function definitions.
+
+\subsubsection{Derivation}
+The \texttt{\blue{deriving}} keyword can be used to automatically generate implementations for the given type class(es).
+
+Syntax: \texttt{\blue{data} <Name> = \ldots \blue{deriving} (<Class1>, \ldots)}
+
+Example: \texttt{\blue{data} Shape = Circle Int | Rect Int Int \blue{deriving} Show}. Then, \texttt{\blue{print} (Circle 5)} $\rightarrow$ \texttt{Circle 5}.
+
 \subsection{Defining Datatypes}
 The \blue{data} keyword is used to define a new datatype; unlike the above, these are entirely custom.
 
 This may be done using the \texttt{data} keyword:
 \begin{center}
-  \texttt{\blue{data} Name = \red{Constructor1} <args> | \ldots}
+  \texttt{\blue{data} Name = \red{Constructor1} [<args>] | \ldots}
 \end{center}
 where \texttt{<args>} are the \textit{types} of each argument, not literals.
 
+Constructors are either plain values, or functions which take \texttt{args} and return the datatype.
+
+Data consturctors can include polymorphism by including type variables after \texttt{<Name>} e.g. \texttt{\blue{data} Maybe a = Nothing | Just a}.
+
 \subsubsection{Examples}
 \begin{itemize}
+  \item \url{rock-paper-scissors.hs} - A basic example revolving around Rock-Paper-Scissors;
   \item \url{expr.hs} - A program to build and evaluate expressions;
   \item \url{tree.hs} - A representation of a tree structure;
   \item \url{nat-num.hs} - A definition of natural numbers using the successor function;
