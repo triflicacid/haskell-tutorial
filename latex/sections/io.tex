@@ -1,0 +1,46 @@
+\section{I/O}
+
+I/O produces an issue with Haskell as I/O functions aren't \textit{pure}.
+
+\subsection{The \texttt{IO} Type}
+All I/O functions in Haskell have the following type: \texttt{IO \red{<value>}}.
+
+This special type holds a given I/O action. When the \texttt{IO} value is used, the stored action will be carried out, and \texttt{IO \red{<value>}} is returned.
+
+For example, in GHCI
+
+\texttt{> hi = putStrLn "Hello, World!"}
+
+\texttt{> hw}
+
+\texttt{Hello, World!}
+
+Notice how nothing was outputted until the \texttt{IO} value was used. Note that \texttt{hw} may be used mutliple times.
+
+\subsection{Input}
+\begin{itemize}
+  \item \texttt{getLine :: IO \red{String}} -- retrieves a line of input from STDIN;
+\end{itemize}
+
+\subsection{Output}
+\begin{itemize}
+  \item \texttt{putStr :: \red{String} -> IO ()} -- puts the given string to STDOUT;
+  \item \texttt{putStrLn :: \red{String} -> IO ()} -- puts the given string to STDOUT on a new line;
+\end{itemize}
+
+\subsection{Extracting \texttt{<value>}}
+\texttt{IO} is a \textit{monad}, and should be extracted as such.
+
+\texttt{greet :: IO ()}
+
+\texttt{greet = \blue{do}}
+
+\quad\texttt{putStrLn "What's your name? "}
+
+\quad\texttt{name <- getLine}
+
+\quad\texttt{putStrLn \$ "Hello, " ++ name ++ "!"}
+
+You can only extract values from \texttt{IO} inside of another \texttt{IO} action.
+
+FOr a more complex example, see \url{code/IO.hs}.
