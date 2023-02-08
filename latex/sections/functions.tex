@@ -32,9 +32,11 @@ For an example, take a function which returns the sum of the elements of an arra
 
 A good example of infix functions are operators such as \texttt{+}. Functions which take two arguments may be writen between the arguments instead.
 
-For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \textasciigrave\blue{add}\textasciigrave 7} are equivalent.
+For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \;\textasciigrave\blue{add}\textasciigrave\; 7} are equivalent.
 
 To reference the function defined by an operator i.e. \texttt{+}, surround it with parenthesis i.e. \texttt{(+)}.
+
+The associativity and precedence of infix operators may be changed via \texttt{\blue{infixr}/\blue{infixl} <prec> <function name>} where $0 < \texttt{prec} \le 9$.
 
 \subsubsection{Pattern Matching}
 
@@ -179,7 +181,7 @@ A synonym of such a function is the dollar (\texttt{\$}) operator: \texttt{(\$) 
   \item \texttt{\blue{fold} :: (a -> b -> b) -> b -> [a] -> b} processes a list with some function to produce a single value, starting at a given value.
   
   In Haskell, \texttt{\blue{fold}} doesn't exist, but rather \texttt{\blue{foldr}} and \texttt{\blue{foldl}} which start folding at either end of the list respectively.
-  \[\texttt{\blue{foldr}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = x_1\; (op)\; x_2\; (op)\; \ldots\; (op)\; x_n\; (op)\; a\]
+  \[\texttt{\blue{foldr}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = a\; (op)\; x_n\; (op)\; \ldots\; (op)\; x_2\; (op)\; x_1\]
   \[\texttt{\blue{foldl}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = a\; (op)\; x_n\; (op)\; x_{n-1}\; (op)\; \ldots\; (op)\; x_1\]
 
   Example: \texttt{\blue{foldr} (+) 0 [1,2,3,4,5]} returns \texttt{15}.

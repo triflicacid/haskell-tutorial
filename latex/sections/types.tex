@@ -4,6 +4,8 @@ Every expression in Haskell has a type. Types are inferred, even when given expl
 
 Types always begin with an UPPERCASE letter.
 
+The cardinality of a type is how many \textit{states} the data type could hold. Polymorphic types have no cardinality.
+
 \subsection{Variable Types}
 
 \begin{center}
@@ -54,7 +56,7 @@ A type class definition begins with
 
 Below is a list of function declarations. For a type to be a member of \texttt{<Name>}, it must implement all of these functions.
 
-\subsubsection{Implmentation}
+\subsubsection{Implementation}
 To define a new type which belongs to a type class:
 \texttt{\blue{instance} <TypeClass> <TypeName> \blue{where}}
 
