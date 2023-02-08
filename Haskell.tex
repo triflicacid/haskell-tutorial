@@ -9,6 +9,7 @@
 \usepackage{lastpage}
 \usepackage{setspace}
 \usepackage[hyphens]{url}
+\usepackage{mdframed}
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{appendix}
@@ -20,6 +21,12 @@
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 \newcommand{\green}[1]{\textcolor{green}{#1}}
 \newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\bordertext}[1]{%
+\smallskip\par%
+\noindent\fbox{%
+    \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{#1}%
+}\smallskip%
+}
 \setlength{\parindent}{0cm}
 
 \fancyhf{}
@@ -41,8 +48,10 @@
 
 \include{latex/sections/variables.tex}
 \include{latex/sections/functions.tex}
-\include{latex/sections/collections.tex}
 \include{latex/sections/types.tex}
+\include{latex/sections/collections.tex}
 \include{latex/sections/modules.tex}
+\include{latex/sections/io.tex}
+\include{latex/sections/monads.tex}
 
 \end{document}
