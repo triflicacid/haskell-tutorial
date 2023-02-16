@@ -43,6 +43,15 @@ Syntax:
 
 Using the above example, now, instead of writing \texttt{Module.double} one would now write \texttt{Alias.double}.
 
-\subsubsection{Import Hiding}
+\subsubsection{Hiding Imports}
 The \texttt{\blue{hiding}} keyword can be used to omit imports.
 E.g. \texttt{\blue{import} Prelude \texttt{hiding} (map)} would import every function from \texttt{Prelude} but omit \texttt{map}.
+
+\subsection{Importing Datatypes}
+Let's say \texttt{\blue{data} DataType = A $\mid$ B $\mid$ C} is defined inside module \texttt{Module}.
+
+\begin{itemize}
+  \item To import every constructor, we'd write \texttt{\blue{import} Module (DataType(..))}
+  \item To import only constructor \texttt{A}, we'd write \texttt{\blue{import} Module (DataType(A))}
+  \item To import constructors \texttt{A} and \texttt{B}, we'd write \texttt{\blue{import} Module (DataType(A,B))}
+\end{itemize}

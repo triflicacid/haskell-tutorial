@@ -127,17 +127,3 @@ Duplicate field names in this context is OK.
 This will generate functions \texttt{x}, \texttt{y} and \texttt{z} all with the signature \texttt{x/y/z :: Point -> \red{Int}}. Both \texttt{x} and \texttt{y} will work on either \texttt{D2} or \texttt{D3}, but applying \texttt{z} to \texttt{D2} will throw an exception.
 
 For an example, see \url{code/vector.hs}.
-
-\subsection{Maybe}
-The \texttt{Maybe} type is incredibly useful, as it can be used to represent the \textit{absence} of a value. This is useful when our function is passed invalid data, for example.
-
-If it defined as: \texttt{\blue{data} Maybe a = Nothing | Just a}
-
-\subsubsection{Functions}
-Useful functions may be found inside \texttt{Data.Maybe}.
-\begin{itemize}
-  \item \texttt{isJust :: Maybe a -> \red{Bool}} -- returns if the passed \texttt{Maybe} is a \texttt{Just} value;
-  \item \texttt{fromMaybe :: a -> Maybe a -> a} -- returns the \texttt{Just} value if a value is present, else returns the default value;
-  \item \texttt{fromJust :: Maybe a -> a} -- returns the \texttt{Just} value, or throws an exception if recieved \texttt{Nothing};
-  \item \texttt{catMaybes :: [Maybe a] -> [a]} -- returns a list containing all the \texttt{Just} values.
-\end{itemize}

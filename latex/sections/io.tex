@@ -44,3 +44,30 @@ Notice how nothing was outputted until the \texttt{IO} value was used. Note that
 You can only extract values from \texttt{IO} inside of another \texttt{IO} action.
 
 For a more complex example, see \url{code/IO.hs}.
+
+\subsection{Environment}
+The following functions are defined in \texttt{System.Environment}.
+
+\subsubsection{Command-Line Arguments}
+Command-line arguments are arguments passed to the executable e.g. \texttt{./prog.exe arg1 arg2 ...}
+
+These can be accessed via \texttt{getArgs :: IO [\red{String}]}
+
+Note, the program name ``\texttt{prog.exe}'' is ommited; this can be access via \texttt{getProgName :: IO String}
+
+\subsubsection{Environment Variables}
+The function \texttt{getEnvironment :: IO [(String, String)]} gets a list of all environment variables in name-value pairs.
+
+To get only one variable, the function \texttt{lookupEnv :: String -> IO (Maybe String)} returns the value of an environment variable.
+
+The function \texttt{withArgs :: [String] -> IO a -> IO a} loads sets the environment variables inside an IO action.
+
+\subsubsection{Error Handling}
+Defined in \texttt{System.Exit}
+
+\begin{itemize}
+  \item \texttt{exitWith :: ExitCode -> IO a} exits the program with the provided exit code (\texttt{ExitCode = ExitSuccess | ExitFailure Int});
+  \item \texttt{exitSuccess :: IO a} exits the program with exit code of success;
+  \item \texttt{exitFailure :: IO a} exits the program with exit code of failure (1);
+  \item \texttt{die :: String -> IO a} prints the given message, then exits the program with exit code of failure (1);
+\end{itemize}

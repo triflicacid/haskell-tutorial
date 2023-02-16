@@ -1,0 +1,12 @@
+\section{Functors}
+
+\texttt{Function} is a type class which requires \texttt{fmap} to be implemented.
+
+\bordertext{\texttt{fmap :: Functor f => (a -> b) -> f a -> f b}}
+
+\subsection{Laws}
+\begin{itemize}
+  \item The mapping \textit{must} preserve the structure of the arguments;
+  \item Mapping over the identity changes nothing i.e. \texttt{fmap id ... == id ...};
+  \item Distributivity of mapping over composition i.e. \texttt{fmap (f . g) == fmap f . fmap g};
+\end{itemize}
