@@ -1,0 +1,17 @@
+\section{Kinds}
+
+The types of \textit{types} and \textit{type constructors} are called \textit{kinds}.
+
+A kind signature is denoted by \texttt{::.}. The number of \textit{kinds} correspond to the number of type parameters a type constructor takes.
+\begin{itemize}
+  \item Types which take no type parameters are of kind \texttt{*} (``\textit{type}'').
+  \begin{itemize}
+    \item \texttt{\red{Bool} :: *}
+    \item \texttt{\red{String} :: *}
+    \item \texttt{Maybe :: * -> *}
+  \end{itemize}
+  \item When we apply a type parameter, one of the parameters is consumed in the kind
+  \begin{itemize}
+    \item \texttt{Maybe \red{Int} :: *}
+  \end{itemize}
+\end{itemize}

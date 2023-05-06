@@ -56,6 +56,13 @@ instance Num a => Monoid (Product a) where
 
 \end{lstlisting}
 
+\subsubsection{Foldable}
+A Foldable datatype is one which may be reduced to a single value i.e. folded in on itself.
+\begin{lstlisting}[language=haskell]
+class Foldable t where
+  foldr :: (a -> b -> b) -> b -> t a -> b
+\end{lstlisting}
+
 \subsection{Functors}
 A Functor is a type class which may have an operation mapped over it.
 
@@ -70,9 +77,10 @@ class Functor f where
 
 A Functor instance must obery the following laws:
 \begin{itemize}
+  \item The mapping must preserver the structure of the arguments.
   \item \textbf{Identity}: \begin{lstlisting}[language=haskell]
 fmap id == id\end{lstlisting}
-  \item \textbf{Preservation of Composition}: \begin{lstlisting}[language=haskell]
+  \item \textbf{Distributive over Composition}: \begin{lstlisting}[language=haskell]
 fmap (f . g) == fmap f . fmap g\end{lstlisting}
 \end{itemize}
 

@@ -1,0 +1,41 @@
+\section{Useful Types}
+This section will list some common, useful types which should be known.
+
+\subsection{Maybe}
+The \texttt{Maybe} type is incredibly useful, as it can be used to represent the \textit{absence} of a value. This is useful when our function is passed invalid data, for example.
+
+If it defined as: \texttt{\blue{data} Maybe a = Nothing | Just a}
+
+\paragraph{Functions}
+Found inside \texttt{Data.Maybe}.
+\begin{itemize}
+  \item \texttt{isJust :: Maybe a -> \red{Bool}} -- returns if the passed \texttt{Maybe} is a \texttt{Just} value;
+  \item \texttt{fromMaybe :: a -> Maybe a -> a} -- returns the \texttt{Just} value if a value is present, else returns the default value;
+  \item \texttt{fromJust :: Maybe a -> a} -- returns the \texttt{Just} value, or throws an exception if recieved \texttt{Nothing};
+  \item \texttt{catMaybes :: [Maybe a] -> [a]} -- returns a list containing all the \texttt{Just} values.
+  \item \texttt{mapMaybe :: (a -> Maybe b) -> [a] -> [b]} -- maps a function over a list of \texttt{Maybe}s, discarding any \texttt{Nothing}s;
+  \item \texttt{maybe :: b -> (a -> b) -> Maybe a -> b} -- takes a maybe. If \texttt{Just}, applies a function and returns. Else, returns a default;
+\end{itemize}
+
+\subsection{Either}
+The \texttt{Either} type can be used to represent a union of types -- a value which is either one type, or another.
+
+It is defined as \texttt{\blue{data} Either a b = Left a $\mid$ Right b}
+
+\paragraph{Functions}
+Found inside \texttt{Data.Either}.
+\begin{itemize}
+  \item \texttt{lefts :: [Either a b] -> [a]} -- returns an array of left-hand side values;
+  \item \texttt{rights :: [Either a b] -> [b]} -- returns an array of right-hand side values;
+  \item \texttt{isLeft :: Either a b -> \red{Bool}} -- returns whether the provided value is a left-hand side value;
+  \item \texttt{isRight :: Either a b -> \red{Bool}} -- returns whether the provided value is a right-hand side value;
+  \item \texttt{fromLeft :: a -> Either a b -> a} -- returns the left-hand side value if a \texttt{Left} is provided, else returns a default;
+  \item \texttt{fromRight :: n -> Either a b -> n} -- returns the right-hand side value if a \texttt{Right} is provided, else returns a default;
+  \item \texttt{either :: (a -> c) -> (b -> c) -> Either a b -> c} -- processes the left- or right-hand value in the \texttt{Either} as per the given functions;
+  \item \texttt{partitionEithers :: [Either a b] -> ([a],[b])} -- traverses the list, placing and \texttt{Left} values in one list and any \texttt{Right} values in another;
+\end{itemize}
+
+\paragraph{Use -- Error Handling}
+\texttt{Either} can be used in place of \texttt{Maybe} for error handling.
+
+\texttt{Left} can represent a correct input/output with \texttt{Right} holding the incorrect value.

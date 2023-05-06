@@ -32,9 +32,11 @@ For an example, take a function which returns the sum of the elements of an arra
 
 A good example of infix functions are operators such as \texttt{+}. Functions which take two arguments may be writen between the arguments instead.
 
-For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \textasciigrave\blue{add}\textasciigrave 7} are equivalent.
+For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \;\textasciigrave\blue{add}\textasciigrave\; 7} are equivalent.
 
 To reference the function defined by an operator i.e. \texttt{+}, surround it with parenthesis i.e. \texttt{(+)}.
+
+The associativity and precedence of infix operators may be changed via \texttt{\blue{infixr}/\blue{infixl} <prec> <function name>} where $0 < \texttt{prec} \le 9$.
 
 \subsubsection{Pattern Matching}
 
@@ -178,9 +180,19 @@ A synonym of such a function is the dollar (\texttt{\$}) operator: \texttt{(\$) 
   Example: \texttt{\blue{filter} (\symbol{92}x -> mod x 2 == 0) [1,2,3,4,5]} returns \texttt{[2,4]}.
   \item \texttt{\blue{fold} :: (a -> b -> b) -> b -> [a] -> b} processes a list with some function to produce a single value, starting at a given value.
   
-  In Haskell, \texttt{\blue{fold}} doesn't exist, but rather \texttt{\blue{foldr}} and \texttt{\blue{foldl}} which start folding at either end of the list respectively.
-  \[\texttt{\blue{foldr}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = x_1\; (op)\; x_2\; (op)\; \ldots\; (op)\; x_n\; (op)\; a\]
-  \[\texttt{\blue{foldl}}\; (op)\; a\; [x_1, x_2, \ldots, x_n] = a\; (op)\; x_n\; (op)\; x_{n-1}\; (op)\; \ldots\; (op)\; x_1\]
+  In Haskell, \texttt{\blue{fold}} doesn't exist, but rather \texttt{\blue{foldr}} and \texttt{\blue{foldl}} wherein the position of the base value is different
+
+  \begin{lstlisting}[language=haskell]
+foldr f a [] = a
+foldr f a (x:xs) = f x (foldr f a xs)
+-- foldr f a [x1, x2, ..., xn] = (x1 `f` (x2 `f` (... (xn `f` a))))
+
+foldl f a = []
+foldl f a (x:xs) = f (foldl f a xs) x
+-- foldl f a [x1, x2, ..., xn] = (...((a `f` x1) `f` x2) `f` xn)
+  \end{lstlisting}
+
+  See \texttt{code/folding.hs}
 
   Example: \texttt{\blue{foldr} (+) 0 [1,2,3,4,5]} returns \texttt{15}.
 \end{itemize}
@@ -202,20 +214,17 @@ For example, one could define a function \texttt{\blue{add}} in multiple ways:
   add = (\x -> (\y -> x + y))
 \end{lstlisting}
 
-\subsection{Currying \& Uncurrying}
-Let's illustrate these terms by defining functions,
+\subsection{Currying}
+\begin{lstlisting}[language=haskell]
+curry :: ((a,b -> c) -> a -> b -> c)
+curry f x y = f (x,y)
+\end{lstlisting}
 
-\begin{center}
-  \texttt{\blue{curry} :: ((a,b) -> c) -> a -> b -> c}
-
-  \texttt{\blue{curry} f x y = f (x,y)}
-\end{center}
-
-\begin{center}
-  \texttt{\blue{uncurry} :: (a -> b -> c) -> (a,b) -> c}
-
-  \texttt{\blue{uncurry} f (x,y) = f x y}
-\end{center}
+\subsection{Uncurrying}
+\begin{lstlisting}[language=haskell]
+uncurry :: (a -> b -> c) -> (a,b) -> c
+uncurry f (x,y) = f x y
+\end{lstlisting}
 
 \subsubsection{Partial Function Application}
 Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function; \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}. This is known as a \textit{section}.
