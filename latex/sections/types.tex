@@ -54,7 +54,7 @@ A type class definition begins with
 
 Below is a list of function declarations. For a type to be a member of \texttt{<Name>}, it must implement all of these functions.
 
-\subsubsection{Implmentation}
+\subsubsection{Implementation}
 To define a new type which belongs to a type class:
 \texttt{\blue{instance} <TypeClass> <TypeName> \blue{where}}
 
@@ -72,6 +72,8 @@ Common type classes include:
   \item \texttt{\red{Floating}} -- types which are float-like i.e. \texttt{(/), ...} is defined;
   \item \texttt{\red{Enum}} -- types which may be enumerated i.e. \texttt{succ, pred, ...} are defined;
 \end{itemize}
+
+\textit{N.B. for information on complex type classes, see Type Class section}
 
 \subsubsection{Instances}
 Intances allow us to write functions which make use of type classes. Syntax:

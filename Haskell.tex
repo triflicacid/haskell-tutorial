@@ -11,10 +11,38 @@
 \usepackage[hyphens]{url}
 \usepackage{mdframed}
 \usepackage{xcolor}
+\definecolor{commentgreen}{RGB}{2,112,10}
 \usepackage{tabularx}
 \usepackage{appendix}
-\usepackage{listings}
+\usepackage{courier} %% Sets font for listing as Courier.
 \usepackage{verbatim}
+\usepackage{alltt}
+
+\usepackage{listings}
+\lstset{
+  frame=none,
+  xleftmargin=2pt,
+  stepnumber=1,
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\ttfamily\tiny\color[gray]{0.3},
+  belowcaptionskip=\bigskipamount,
+  captionpos=b,
+  escapeinside={*'}{'*},
+  language=haskell,
+  tabsize=2,
+  emphstyle={\bf},
+  commentstyle=\it\color{commentgreen},
+  stringstyle=\mdseries\rmfamily\color{red},
+  showspaces=false,
+  keywordstyle=\bfseries\rmfamily\color{blue},
+  columns=flexible,
+  basicstyle=\small\ttfamily,
+  showstringspaces=false,
+  morecomment=[l]\%,
+  frame = trBL,
+  firstnumber = 1
+}
 
 \usepackage[hidelinks]{hyperref}
 
@@ -51,7 +79,7 @@
 \include{latex/sections/types.tex}
 \include{latex/sections/collections.tex}
 \include{latex/sections/modules.tex}
+\include{latex/sections/type-classes.tex}
 \include{latex/sections/io.tex}
-\include{latex/sections/monads.tex}
 
 \end{document}

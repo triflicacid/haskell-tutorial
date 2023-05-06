@@ -1,0 +1,221 @@
+\section{Type Classes}
+This section covers more complex type classes. For basics, see \texttt{Types -> Type Classes}.
+
+\subsection{Semigroups}
+A type is a Semigroup if there exists some function which, when two values from the group are combined, that value is also in the Semigroup.
+
+\begin{lstlisting}[language=haskell]
+class Semigroup a where
+  (<>) :: a -> a -> a
+
+infixr 6 <>
+\end{lstlisting}
+
+This diamond operator must be \textbf{associative}:
+\begin{lstlisting}[language=haskell]
+x <> (y <> z) == (x <> y) <> z
+\end{lstlisting}
+
+\subsection{Monoid}
+A Monoid is an extension of a Semigroup, adding an identity element.
+\begin{lstlisting}[language=haskell]
+class Semigroup a => Monoid a where
+  mempty :: a
+
+  -- Optional functions
+  mappend :: a -> a -> a
+  mappend = (<>)
+
+  mconcat :: [a] -> a
+  mconcat = foldr mappend mempty
+\end{lstlisting}
+
+\texttt{mempty} must be an identity element for the Semigroup. Therefore, it must obey:
+\begin{lstlisting}[language=haskell]
+x <> mempty == x
+mempty <> x == x
+\end{lstlisting}
+
+\subsubsection{Multiple Monoids}
+A type may have multiple Monoid implementations (i.e. multiple viable operators exist which satisfy Monoidal conditions).
+
+For example, take numerical types:
+\begin{lstlisting}[language=haskell]
+newtype Sum n = Sum { getSum :: n }
+instance Num a => Semigroup (Sum a) where
+  (<>) = (+)
+instance Num a => Monoid (Sum a) where
+  mempty = 0
+
+
+newtype Product n = Product { getProduct :: n }
+instance Num a => Semigroup (Product a) where
+  (<>) = (*)
+instance Num a => Monoid (Product a) where
+  mempty = 1
+
+\end{lstlisting}
+
+\subsection{Functors}
+A Functor is a type class which may have an operation mapped over it.
+
+\begin{lstlisting}[language=haskell]
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b -- Infix symbol is <$>
+
+  -- The following functions are optional
+  (<$) :: a -> f b -> f a
+  (<$) = fmap . const
+\end{lstlisting}
+
+A Functor instance must obery the following laws:
+\begin{itemize}
+  \item \textbf{Identity}: \begin{lstlisting}[language=haskell]
+fmap id == id\end{lstlisting}
+  \item \textbf{Preservation of Composition}: \begin{lstlisting}[language=haskell]
+fmap (f . g) == fmap f . fmap g\end{lstlisting}
+\end{itemize}
+
+\subsubsection{Fmap}
+\texttt{fmap} allows a function to be mapped over a structure without the internal structure of the Functor changing.
+
+\textbf{Example}:
+\begin{lstlisting}[language=haskell]
+data Tree a = Leaf a | Node (Tree a) a (Tree a)
+
+instance Functor Tree where
+  fmap f (Leaf a) = Leaf (f a)
+  fmap f (Node a b c) = Node (fmap f a) (f b) (fmap f c)
+\end{lstlisting}
+
+\subsection{Applicatives}
+Applicatives are Functors with more and better functionality, with \texttt{<*>} essentially \textit{injecting} a value into a wrapped function, and \texttt{pure} allowing easy construction of an applicative.
+
+\begin{lstlisting}[language=haskell]
+class Functor f => Applicative f where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+
+  -- Optional functions
+  (*>) :: f a -> f b -> f b
+  a *> b = b
+  (<*) :: f a -> f b -> f a
+  a <* b = a
+\end{lstlisting}
+
+An Applicative must obey the following laws:
+\begin{itemize}
+  \item \textbf{Identity}: \begin{lstlisting}[language=haskell]
+pure id <*> v == v\end{lstlisting}
+  \item \textbf{Homomorphism}: \begin{lstlisting}[language=haskell]
+pure f <*> pure x == pure (f x)\end{lstlisting}
+  \item \textbf{Interchange}: \begin{lstlisting}[language=haskell]
+u * pure y == pure (\$ y) <*> u\end{lstlisting}
+  \item \textbf{Composition}: \begin{lstlisting}[language=haskell]
+pure (.) <*> u <*> v <*> w == u <*> (v <*> w)\end{lstlisting}
+\end{itemize}
+
+\subsection{Monads}
+A Monad allows the transformation of a value into a Monad via a function.
+
+\begin{lstlisting}[language=haskell]
+class Applicative m => Monad m where
+  (>>=) :: m a -> (a -> m b) -> m b -- "Bind"
+
+  -- Optional functions
+  (>>) :: m a -> m b -> m b -- "Then"
+  a >> b = a >>= \x -> b
+
+  return :: a -> m a
+  return = pure
+\end{lstlisting}
+
+Any implementation must abide by these laws:
+\begin{itemize}
+  \item \textbf{Left identity}: \begin{lstlisting}[language=haskell]
+return a >= h == h a\end{lstlisting}
+  \item \textbf{Right identity}: \begin{lstlisting}[language=haskell]
+m >= return == m\end{lstlisting}
+  \item \textbf{Associativity}: \begin{lstlisting}[language=haskell]
+(m >>= g) >>= h == m >>= (\x -> g x >>= h)\end{lstlisting}
+\end{itemize}
+
+\subsubsection{Bind}
+\bordertext{\texttt{(>>=) :: \red{Monad} m => m a -> (a -> m b) -> m b}}
+This function takes a monad and a function which takes a raw value and returns a new monad, and returns another new monad.
+
+When implemented, then, we may vary the action taken depending on the value of the provided monad, such as returning a default value -- this is what \texttt{(>>=)} does with \texttt{Maybe}, as shown below: 
+
+\textbf{Example}:
+\begin{lstlisting}[language=haskell]
+  add :: Num a => Maybe a -> Maybe a -> Maybe a
+  add mx my = mx >>= (\x -> my >>= (\y -> Just (x + y)))
+
+  -- Then addition works as expected
+  add (Just 1) (Just 2) -- => Just 3
+  -- And if either one of the arguments is Nothing, it returns Nothing
+  add Nothing (Just ?) -- => Nothing
+\end{lstlisting}
+
+\subsubsection{Then}
+\bordertext{\texttt{(>>) :: \red{Monad} m => m a -> m b -> m a}}
+
+This function discards the second monad given to it. \texttt{m >> n} is equivalent to \texttt{m >>= \symbol{92}\_ -> n}.
+
+``Then'' can be though of wanting to carry out an action but not caring what the result is.
+
+\subsubsection{Return}
+\bordertext{\texttt{return :: \red{Monad} m => a -> m a}}
+
+Return wraps a monad around a raw value.
+
+Using the example from the Bind section, we could substitute the explicit \texttt{Just} with the more general \texttt{return}. Now, this would theoretically work with any appropriately-defined monad.
+
+\begin{lstlisting}[language=haskell]
+  add mx my = mx >>= (\x -> my >>= (\y -> return (x + y)))
+\end{lstlisting}
+
+\subsubsection{Fail}
+\bordertext{\texttt{fail :: \red{Monad} m => \red{String} -> m a}}
+
+Fail is intended to be called when something goes wrong. The default implementation is to call \texttt{error} (i.e. error out of the program), but it may be implemented so that certain errors may be handled and return an appropriate monad as a response.
+
+\subsubsection{``do'' Syntax}
+
+Chaining together applications of \texttt{(>>=)}, \texttt{(>>)} and lambda functions can get tedious; that's where the syntactic sugar ``do'' expression comes in.
+
+The ``statements'' inside of \texttt{do} are executed in order, and if one ``statement'' fails this will be propagated through.
+
+\begin{itemize}
+  \item \textbf{Bind} \begin{lstlisting}[language=haskell]
+    m >>= \x -> ...
+    -- Becomes
+    do
+      x <- m
+      ...
+  \end{lstlisting}
+  \item \textbf{Then} \begin{lstlisting}[language=haskell]
+    m >> ...
+    -- Becomes
+    do
+      m
+      ...
+  \end{lstlisting}
+\end{itemize}
+
+\textbf{Example}:
+\begin{lstlisting}[language=haskell]
+  -- Re-writing the above definition of 'add'
+  add mx my = do
+    x <- mx
+    y <- my
+    return $ x + y
+\end{lstlisting}
+
+\subsubsection{Kleisli-Composition}
+This operator, denoted \texttt{>=>}, acts as a Monad composition operator. It is defined in \texttt{Control.Monad} as so
+\begin{lstlisting}[language=haskell]
+infixr 1 >=>
+(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> a -> m c
+f >=> g = \x -> f x >>= g
+\end{lstlisting}
