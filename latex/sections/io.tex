@@ -70,3 +70,26 @@ Defined in \texttt{System.Exit}
   \item \texttt{exitFailure :: IO a} exits the program with exit code of failure (1);
   \item \texttt{die :: String -> IO a} prints the given message, then exits the program with exit code of failure (1);
 \end{itemize}
+
+\subsection{Files}
+The symbols \texttt{stdout :: Handle} and \texttt{stdin :: Handle} are handles to the process' input/output streams. I/O functions defined above use the following functions with these handles provided.
+
+\begin{itemize}
+  \item \texttt{readFile :: FilePath -> IO \red{String}} -- reads contents of the file
+  \item \texttt{writeFile :: FilePath -> \red{String} -> IO ()} -- writes to the file (overwrites contents if exists)
+  \item \texttt{appendFile :: FilePath -> \red{String} -> IO ()} -- appends to the file
+  \item \texttt{renameFile :: FilePath -> FilePath -> IO ()} -- renamed the given file to the second argument
+  \item \texttt{deleteFile :: \red{String} -> IO ()} -- deletes the given file
+\end{itemize}
+
+Alternatively, you can use file handles.
+\begin{itemize}
+  \item \texttt{openFile :: FilePath -> IOMode -> IO Handle} -- Open a file in the given mode.
+  
+  \texttt{\blue{data} IOMode = ReadMode | WriteMode | AppendMode | ReadWriteMode}
+  \item \texttt{hGetContents :: Handle -> IO String} -- Get contents of the file
+  \item \texttt{hPutStr :: Handle -> \red{String} -> IO ()} -- writes the given string to the file
+  \item \texttt{hPrint :: Show a => Handle -> a -> IO ()} -- converts \texttt{a} to a string and write to the file
+  \item \texttt{hClose :: Handle -> IO ()} -- Close the given handle
+  \item \texttt{withFile :: FilePath -> IOMode -> (Handle -> IO a) -> IO a} -- opens a file, processes it according to the function, then closes it
+\end{itemize}
