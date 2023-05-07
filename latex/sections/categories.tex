@@ -1,0 +1,221 @@
+\section{Category Theory}
+This section will contain a brief look into category theory and how it applies to Haskell. Various concepts such as Applicatives and Monads are discussed mathematically; for a more haskell-focused approach, see chapter \texttt{Type Classes}.
+
+A category is a collection of \textit{objects} and \textit{arrows}. Arrows acts as pathways between objects.
+\begin{itemize}
+  \item $A \to B$ is a \textit{morphism} from $A$ to $B$.
+  \item $A \to A$ is an \textit{identity morphism} from $A$ to $B$ (endomorphism).
+  \item Let $A \to B$ and $B \to C$ be denoted $f$ and $g$, respectively. Then $A \to C$ is denoted as $g \circ f$ as a \textit{composition}.
+\end{itemize}
+In a category, every object has at least one identity morphism, and every morphism is composable.
+
+Notation:
+\begin{itemize}
+  \item \texttt{obj(C)} := Class of objects in a category.
+  \item \texttt{hom(C)} := Class of morphisms in a category.
+  \item \texttt{C(a,b)} := All morphisms from $a$ to $b$.
+  \item $\circ$ := Composition of morphisms
+  \begin{itemize}
+    \item $h \circ f \circ g \equiv (h \circ f) \circ g \equiv h \circ (f \circ g)$
+    \item $f \circ 1 \equiv 1 \circ f \equiv f$
+  \end{itemize}
+\end{itemize}
+
+In Haskell, types can be viewed as categories with functions acting as morphisms. Indeed, every function is composable, and the function \texttt{id} acts as an identity morphism.
+
+\begin{lstlisting}[language=haskell]
+import Control.Category
+
+class Category (cat :: k -> k -> *) where
+  id :: cat a a
+  (.) :: cat b c -> cat a b -> cat a c
+\end{lstlisting}
+
+\subsection{Functors}
+A functor maps one category to another - in haskell, it maps some computation into the functorial context using \texttt{fmap}.
+
+\begin{lstlisting}[language=haskell]
+class Functor (f :: * -> *) where
+  fmap :: (a -> b) -> f a -> f b
+\end{lstlisting}
+
+The function \texttt{fmap} maps the morphism \texttt{a -> b} to \texttt{f a -> f b}.
+
+\subsection{Monoidal Category}
+Given a category $C$, a functor $\diamond$ (the ``tensor product'') where $\diamond : C \times C \to C$, and an identity element $I$ with
+\begin{itemize}
+  \item $\alpha_{A,B,C} := (A \diamond B) \diamond C \equiv A \diamond (B \diamond C)$
+  \item $\lambda_A := I \diamond A \equiv A$
+  \item $\rho_A := A \diamond I \equiv A$
+\end{itemize}
+A monoidal category is given by $(S, \{1\}, \diamond)$ where $S$ is a set, $1$ is the identity element, and $\diamond$ is a tensor product operation.
+
+\subsection{Monoidal Functors}
+Given two monoidal ctegories, $(C, 1_C, \diamond_C)$ and $(D, 1_D, \diamond_D)$ then $F : C \to D$ is a monoidal functor with
+\begin{itemize}
+  \item $\phi_{A,B} := F(A) \diamond_D F(B) = F(A \diamond_C B)$
+  \item $\phi := 1_D \to F(1_C)$
+\end{itemize}
+
+Let's define a monoidal functor in Haskell.
+\begin{lstlisting}[language=haskell]
+class Functor f => Monoidal f where
+  unit :: f ()
+  (**) :: f a -> f b -> f (a, b)
+\end{lstlisting}
+
+This monoidal functor is different from a normal functor as \texttt{(**)} only works on objects which are in the same functorial context.
+
+let's further define a function
+\begin{lstlisting}[language=haskell]
+(<**>) :: Monoidal f => f (a -> b) -> f a -> f b
+mf <**> mx = fmap (\(f,x) -> f x) (mf ** mx)
+
+-- With this operator, we can lift any function into a functor
+lift2 :: (a -> b -> c) -> (f a -> f b -> f c)
+lift2 f x = (<**>) (fmap f x)
+
+lift3 :: (a -> b -> c -> d) -> (f a -> f b -> f c -> f d)
+lift3 f a b c = lift2 f a (b <**> c)
+
+...
+
+lift<n> f x1 ... xn = lift<n-1> f x1 ... x<n-1> <**> xn
+\end{lstlisting}
+
+\subsection{Applicative Functors}
+Applicatives are simply equivalent to lax monoidal functors. These allow functions to be lifted into the functorial context in order to compose them.
+
+\begin{lstlisting}[language=haskell]
+class Functor f => Applicative (f :: * -> *) where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+  liftA2 :: (a -> b -> c) -> f a -> f b -> f c
+\end{lstlisting}
+
+\subsection{Monoids}
+Given a monoidal category $(C, 1, \diamond)$, then $(M, \mu, \eta)$ is a monoid iff
+\begin{itemize}
+  \item $M$ is an element in $obj\;(C)$
+  \item $\mu : M \diamond M \to M$
+  \item $\eta : 1 \to M$
+\end{itemize}
+
+\subsection{Monads}
+A monad makes it possible to lift a value into the context and access with a function without loosing the context (important!).
+
+Given a catgory $C$ and a functor $T$ with
+\begin{itemize}
+  \item $T : C \to C$ (endofunctor)
+  \item $\eta : 1_C \to T$
+  
+  Haskell: \texttt{$\eta$ :: $1_C$ -> T (a -> m a)}
+  \item $\mu : T^2 \to T$
+
+  Haskell: \texttt{$\mu$ :: $T^2$ -> T (m (m a) -> m a)}
+\end{itemize}
+Such that
+\begin{itemize}
+  \item $\mu \circ T \mu \equiv T \mu \circ \mu$
+  \item $\mu \circ T \eta \equiv \mu \circ \eta T$
+\end{itemize}
+
+By these definitions, a useful property is that any number of applications of $T$ can be reduces into a single application via $\mu$.
+
+A monad takes a category and puts it into a functorial context.
+
+The following snippet illustrates $\eta$ and $\mu$ definitions for \texttt{Maybe} as \texttt{unit} and \texttt{join} respectively,
+\begin{lstlisting}[language=haskell]
+unit :: a -> Maybe a
+unit = Just
+
+join :: Maybe (Maybe a) -> Maybe a
+join (Just x) = x
+join Nothing = Nothing
+\end{lstlisting}
+
+So far we have no functions to work with the values inside the Monad context.
+\begin{lstlisting}[language=haskell]
+map :: Monad m => (a -> b) -> m a -> m b
+map = fmap
+\end{lstlisting}
+We notice that the signature strongly resembles that of \texttt{fmap} for functors. Indeed, a sufficient definition is simply to re-use \texttt{fmap}.
+
+Combined with the property of applicative functors to not leave their context, it makes sense in Haskell to define a Monad as a subclass of Applicative.
+\begin{lstlisting}[language=haskell]
+class Applicative m => Monad (m :: * -> *) where
+  (>>=) :: m a -> (a -> m b) -> m b
+  (>>) :: m a -> m b -> m b
+  return :: a -> m a
+\end{lstlisting}
+using the functions already defined, we can define these new functions
+\begin{lstlisting}[language=haskell]
+x >>= f = join (map f x)
+a >> b = a >>= \_ -> b
+return = unit
+\end{lstlisting}
+
+\subsection{Arrows}
+Arrows is a structure representing the abstract concept of computation, spefically composition, parameterised by their input and output. Arrows are essentially functions lifted into a context.
+
+\begin{lstlisting}[language=haskell]
+import Control.Arrow -- Useful functions/classes found here!
+
+class Category a => Arrow (a :: * -> * -> *) where
+  arr :: (b -> c) -> a b c
+
+  -- optional functions
+  first :: a b c -> a (b, d) (c, d)
+  second :: a b c -> a (d, b) (d, c)
+  (***) :: a b c -> a b' c' -> a (b, b') (c, c')
+  (&&&) :: a b c -> a b c' -> a b (c, c')
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{arr} lifts a function into the arrow context. It takes a function \texttt{input -> output} and returns an Arrow instance with the same input and output; can be through of like \texttt{pure} for Arrows.
+  \item \texttt{first} takes an existing arrow, and creates a new arrow which works on tuples. The function operates on the first argument of the tuple and preserves the second.
+  \item \texttt{second} takes an existing arrow, and creates a new arrow which works on tuples. The function operates on the second argument of the tuple and preserves the first.
+  \item \texttt{(***)} is a combination of both \texttt{first} and \texttt{second}, returning tuples which contain both the origin and transformed inputs.
+  \item \texttt{(\&\&\&)} transforms an argument in two different ways, returning both outputs.
+\end{itemize}
+
+\subsubsection{Function Type}
+\begin{lstlisting}[language=haskell]
+instance Arrow (->) where
+  -- These are both necessary
+  arr = id
+  (***) f g (x, y) = (f x, f y)
+
+  -- These are optional
+  first f (x, y) = (f x, y)
+  second f (x, y) = (x, f y)
+  (&&&) f g (x, y) = (f x, g y)
+\end{lstlisting}
+
+\subsubsection{Kleisli Arrows}
+\begin{lstlisting}[language=haskell]
+newtype Kleisli m a b = Kleisli { runKleisli :: a -> m b }
+
+instance Monad m => Arrow (Kleisli m) where
+  arr f = Kleisli (return . f)
+  first (Kleisli f) = Kleisli (\ ~(b,d) -> f b >>= \c -> return (c,d))
+  second (Kleisli f) = Kleisli (\ ~(d,b) -> f b >>= \c -> return (d,c))
+\end{lstlisting}
+
+\subsubsection{Choice Arrows}
+\begin{lstlisting}[language=haskell]
+class Arrow a => ArrowChoice (a :: * -> * -> *) where
+  left :: a b c -> a (Either b d) (Either c d) -- Only changes value of the Left constructor
+  right :: a b c -> a (Either d b) (Either d c) -- Only changes value of the Right constructor
+  (+++) :: a b c -> a b' c' -> a (Either b b') (Either c c')
+  (|||) :: a b c -> a c d -> a (Either b c) d
+\end{lstlisting}
+
+\subsubsection{Arrow Application}
+\begin{lstlisting}[language=haskell]
+class Arrow a => ArrowApply (a : * -> * -> *) where
+  app :: a (a b c, b) c
+
+instance ArrowApply (->) where
+  app (f, x) = f x
+\end{lstlisting}

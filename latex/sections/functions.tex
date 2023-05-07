@@ -214,13 +214,13 @@ For example, one could define a function \texttt{\blue{add}} in multiple ways:
   add = (\x -> (\y -> x + y))
 \end{lstlisting}
 
-\subsection{Currying}
+\subsubsection{Currying}
 \begin{lstlisting}[language=haskell]
 curry :: ((a,b -> c) -> a -> b -> c)
 curry f x y = f (x,y)
 \end{lstlisting}
 
-\subsection{Uncurrying}
+\subsubsection{Uncurrying}
 \begin{lstlisting}[language=haskell]
 uncurry :: (a -> b -> c) -> (a,b) -> c
 uncurry f (x,y) = f x y
