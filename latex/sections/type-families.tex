@@ -1,0 +1,36 @@
+\section{Type Families}
+
+Type families are functions at defined at the type level.
+
+\textbf{Example}:
+\begin{lstlisting}[language=haskell]
+data Nat = Z | S Nat
+
+-- value-level functions
+add :: Nat -> Nat -> Nat
+add Z b = b
+add (S a) b = S (add a b)
+
+-- Type-level type family
+type family Add (a :: Nat) (b :: Nat) :: Nat where
+  Add 'Z b = b
+  Add ('S a) b = 'S (Add a b)
+\end{lstlisting}
+
+In the first line of the family definition, we list the types of the arguments and the rteurn type. We populate the block with function definitions.
+Generally, every equation defined up-front: these are called \textbf{closed} type families. We can also have \textbf{open} type families which do not define every equation.
+
+\begin{lstlisting}[language=haskell]
+data Bool = True | False
+
+-- Type-level equivalent to match the value-level function
+type family Not (b :: Bool) :: Bool where
+  Not 'True = 'False
+  Not 'False = 'True
+
+not :: Bool b -> Bool (Not b)
+not True = False
+not False = True
+\end{lstlisting}
+
+The input type determines what the output type will be. The type family will be evaluated for each pattern match in our function equation.
