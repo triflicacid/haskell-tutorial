@@ -22,6 +22,7 @@ Many pre-defined functions for lists are defined in the \texttt{Data.List} modul
 
 \paragraph{General Functions} These functions work on a list of any type, namely \texttt{[a]}.
 \begin{itemize}
+  \item \texttt{<list> !! <index>}. This function gets the item in \texttt{list} at the given index (0-indexed).
   \item \texttt{\blue{head} <list>}. This function returns the head ($x_1$) of the list. Example: \texttt{\blue{head} [1,2,3]} returns \texttt{1}.
   \item \texttt{\blue{tail} <list>}. This function returns the tail of the list. Example: \texttt{\blue{tail} [1,2,3]} returns \texttt{[2,3]}.
   \item \texttt{\blue{length} <list>}. This function returns the length of the list. Example: \texttt{\blue{length} [1,2,3]} returns \texttt{3}.
@@ -29,7 +30,7 @@ Many pre-defined functions for lists are defined in the \texttt{Data.List} modul
   \item \texttt{\blue{null} <list>}. This function returns whether the list is empty. Example: \texttt{\blue{null} [1,2,3]} returns \texttt{\red{False}}.
   \item \texttt{\blue{take} <n> <list>}. This function returns a list of the first $n$ elements of the list. Example: \texttt{\blue{take} 2 [1,2,3,4,5]} returns \texttt{[1,2]}.
   \item \texttt{\blue{drop} <n> <list>}. This function returns a list excluding the first $n$ elements of the list. Example: \texttt{\blue{drop} 2 [1,2,3,4,5]} returns \texttt{[3,4,5]}.
-  \item \texttt{<list1> \blue{++} <list2>}. This function ``append'' returns a concatenation of both lists. Example: \texttt{[1,2] \blue{++} [3,4]} returns \texttt{[1,2,3,4]}.
+  \item \texttt{<list1> ++ <list2>}. This function ``append'' returns a concatenation of both lists. Example: \texttt{[1,2] ++ [3,4]} returns \texttt{[1,2,3,4]}.
 \end{itemize}
 
 \paragraph{Boolean Functions} These functions are of the type \texttt{\blue{fn} :: [\red{Bool}] -> \red{Bool}}
@@ -79,3 +80,17 @@ A tuple has the signature
 \begin{center}
   \texttt{(x,y,...) :: (type$_x$, type$_y$, ...)}
 \end{center}
+
+terminology for common tuples:
+\begin{itemize}
+  \item \texttt{()} - unit.
+  \item \texttt{(a)} - singleton.
+  \item \texttt{(a,b)} - pair.
+  \item \texttt{(a,b,c)} - triplet.
+\end{itemize}
+
+\subsubsection{Pre-defined functions}
+\begin{itemize}
+  \item \texttt{\blue{fst} :: (a,b) -> a} -- extracts the first value in a pair.
+  \item \texttt{\blue{snd} :: (a,b) -> b} -- extracts the second value in a pair.
+\end{itemize}

@@ -28,13 +28,19 @@ Where the function \texttt{func} takes $n$ arguments of types \texttt{\red{type1
 
 Type variables may be used where any type would be permissable and must be lowercase. For example,
 
-\begin{center}
-  \texttt{id :: a -> a}
-
-  \texttt{id x = x}
-\end{center}
+\begin{lstlisting}[language=haskell]
+  id :: a -> a
+  id x = x
+\end{lstlisting}
 
 This is called ``parametric polymorphism''.
+
+Contraints may be imposed on type variables; this is known as ``ad-hoc polymorphism''.
+\begin{lstlisting}[language=haskell]
+  abs :: Num a => a -> a
+  abs x = if x < 0 then -x else x
+\end{lstlisting}
+Multiple type constraints may be listed by comma-seperating them inside parentheses.
 
 \subsection{Type Aliasing}
 This doesn't define a new datatype, but rather an alias for another type.
@@ -42,25 +48,49 @@ This doesn't define a new datatype, but rather an alias for another type.
   \texttt{\blue{type} Pos = \red{type}}
 \end{center}
 
-A common example is using a tuple e.g. \texttt{\blue{type} Pos = (\red{Int}, \red{Int})}. The type name need not be stated in pattern matching.
+\begin{lstlisting}[language=haskell]
+  type Pos = (Int, Int)
+  getX :: Pos -> Int
+  getX (x,y) = x
+
+  -- May have type parameters
+  type Dual a = Either a a
+\end{lstlisting}
 
 \subsection{Type Classes}
 Type classes may be used to restrict the types a polymorphic function may take. This is useful if we would like to use features in a polymorphic function that may only be available to certain types. For a type to be a member of a type class, it must implement all of the required methods.
 
-To impose a constraint on variable \texttt{a} in a function \texttt{f}: \texttt{f :: (\texttt<TypeClass> a, ...) => ...}. This is called ``ad-hoc polymorphism''.
+To impose a constraint on variable \texttt{a} in a function \texttt{f}: \texttt{f :: (\texttt<TypeClass> a, ...) => ...}.
 
 \subsubsection{Definition}
-A type class definition begins with
-
-\texttt{\blue{class} <Name> <var> \blue{where}}
-
-Below is a list of function declarations. For a type to be a member of \texttt{<Name>}, it must implement all of these functions.
+A type class definition has the syntax
+\begin{lstlisting}[language=haskell]
+class <Name> <var> where
+  -- Function signatures
+  ...
+\end{lstlisting}
+For a type to be a member, it must implements every function listed. A class definition may include constraints.
 
 \subsubsection{Implementation}
-To define a new type which belongs to a type class:
-\texttt{\blue{instance} <TypeClass> <TypeName> \blue{where}}
+To define a type to be an instance of a type class:
+\begin{lstlisting}[language=haskell]
+instance <TypeClass> <TypeName> where
+  -- Function definitions
+  ...
+\end{lstlisting}
 
-Where below this is a list of function definitions.
+\textbf{Example}:
+\begin{lstlisting}[language=haskell]
+data S = S String deriving Show
+
+class Show a => Exclaim a where
+    exclaim :: a -> a
+
+instance Exclaim S where
+    exclaim = (++ "!") . show
+    
+main = putStrLn $ exclaim (S "hello")
+\end{lstlisting}
 
 \subsubsection{Common Type Classes}
 Common type classes include:
@@ -77,18 +107,6 @@ Common type classes include:
 
 \textit{N.B. for information on complex type classes, see Type Class section}
 
-\subsubsection{Instances}
-Intances allow us to write functions which make use of type classes. Syntax:
-
-\texttt{\red{instance} (<constraints>) => <typeClass> <value> \red{where}} followed by a list of function definitions.
-
-\subsubsection{Derivation}
-The \texttt{\blue{deriving}} keyword can be used to automatically generate implementations for the given type class(es).
-
-Syntax: \texttt{\blue{data} <Name> = \ldots \blue{deriving} (<Class1>, \ldots)}
-
-Example: \texttt{\blue{data} Shape = Circle Int | Rect Int Int \blue{deriving} Show}. Then, \texttt{\blue{print} (Circle 5)} $\rightarrow$ \texttt{Circle 5}.
-
 \subsection{Defining Datatypes}
 The \blue{data} keyword is used to define a new datatype; unlike the above, these are entirely custom.
 
@@ -100,7 +118,7 @@ where \texttt{<args>} are the \textit{types} of each argument, not literals.
 
 Constructors are either plain values, or functions which take \texttt{args} and return the datatype.
 
-Data consturctors can include polymorphism by including type variables after \texttt{<Name>} e.g. \texttt{\blue{data} Maybe a = Nothing | Just a}.
+Data constructors can include polymorphism by including type variables after \texttt{<Name>} e.g. \texttt{\blue{data} Maybe a = Nothing | Just a}.
 
 \subsubsection{Examples}
 \begin{itemize}
@@ -109,6 +127,60 @@ Data consturctors can include polymorphism by including type variables after \te
   \item \url{tree.hs} -- A representation of a tree structure;
   \item \url{nat-num.hs} -- A definition of natural numbers using the successor function;
 \end{itemize}
+
+\subsubsection{Derivation}
+The \texttt{\blue{deriving}} keyword can be used to automatically generate implementations for the given type class(es).
+
+Syntax: \texttt{\blue{data} <Name> = \ldots \blue{deriving} (<Class1>, \ldots)}
+
+\textbf{Example}:
+\begin{lstlisting}[language=haskell]
+data Shape = Circle Int | Rect Int Int
+  deriving (Show)
+  
+print (Circle 5) = "Circle 5
+\end{lstlisting}
+
+Only certain classes may be derived, such as \texttt{Show}, \texttt{Read}, \texttt{Ord} etc.
+Language extensions \texttt{DeriveFunctor}, \texttt{DeriveFoldable} and \texttt{DeriveTraversable} may be enabled to allow derivation of Functor, Foldable and Traversable classes.
+
+\textbf{Standalone Deriving}
+The language extension \texttt{StandaloneDeriving} allows datatypes to derive type classes seperate from its definition. This allows one to derive instances even when one doesn't have access to the data definition.
+\begin{lstlisting}[language=haskell]
+{-# LANGUAGE StandaloneDeriving #-}
+
+data Foo a = Bar a | Baz String
+-- ...
+deriving instance Show a => Show (Foo a)
+\end{lstlisting}
+
+\subsubsection{Generalised Algebraic Datatypes}
+GADTs add pattern matching and constants to data definitions, and allows data constructors to have more complex return types.
+
+\begin{lstlisting}[language=haskell]
+data <Name> <TypeVariable> where
+  <Variant> :: <Constructor> <Type>
+\end{lstlisting}
+
+For example,
+\begin{lstlisting}
+{-# LANGUAGE GADTs #-}
+
+-- Without GADTs, every rteurn type would be 'Term a'
+data Term a where
+  Lit    :: Int -> Term Int
+  Succ   :: Term Int -> Term Int
+  IsZero :: Term Int -> Term Bool
+  If     :: Term Bool -> Term a -> Term a -> Term a
+  Pair   :: Term a -> Term b -> Term (a,b)
+
+eval :: Term a -> a
+eval (Lit i)      = i
+eval (Succ t)     = 1 + eval t
+eval (IsZero t)   = eval t == 0
+eval (If b e1 e2) = if eval b then eval e1 else eval e2
+eval (Pair e1 e2) = (eval e1, eval e2)
+\end{lstlisting}
 
 \subsection{Records}
 Records allow data to be stored with an associated name.
@@ -121,8 +193,10 @@ This will automatically generate functions \texttt{<field> :: <Name> -> <type>} 
 
 \subsubsection{Multiple Constructors}
 Note that records may also have mutliple constructors,
-
-\texttt{\blue{data} Point = D2 \{ x :: \red{Int}, y :: \red{Int} \} | D3 \{ x :: \red{Int}, y :: \red{Int}, z :: \red{Int} \}}
+\begin{lstlisting}[language=haskell]
+  data Point = D2 { x :: Int, y :: Int }
+    | D3 { x :: Int, y :: Int, z :: Int }
+\end{lstlisting}
 
 Duplicate field names in this context is OK.
 

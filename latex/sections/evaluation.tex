@@ -9,17 +9,19 @@ Haskell is lazy. This means that it will only evaluate an expression when that e
 
 An un-evaluated expression may be viewed in GHCi using \texttt{:sprint <expr>}. Underscores represent thunks which have not been evaluated.
 
-To evaluate an expression, Haskell recursively \textit{reduces} terms and applies atomic calculations where necessary (operations such as \texttt{+} and \texttt{*} on numeric types).
+To evaluate an expression, Haskell recursively reduces terms and applies atomic calculations where necessary (operations such as \texttt{+} and \texttt{*}).
 
-\subsection{Reductions}
-This is the technique Haskell uses to evaluate expressions. The idea is that anything appearing on the left-hand side of \texttt{=} may be replaced by its right-hand side (and vice versa). Pattern matching is used in more complex replacements.
+\subsection{Reduction}
+This is how Haskell evaluates expressions.
+
+Anything that appears on the left-hand side of \texttt{=} may be replaced by its right-hand side (and vice versa). Pattern matching is used in more complex replacements. An expression is fully evaluated when it can cannot be further reduced i.e. a value.
 
 \textbf{Example}:
 \begin{lstlisting}[language=haskell]
 square :: Int -> Int
 square x = x * x
 
-f :: Int -> int -> Int
+f :: Int -> Int -> Int
 f x y = y + square x
 
 155 + f 94 10           -- Apply definition of 'f'
@@ -58,14 +60,19 @@ fst (square 3, square 4)
 \end{lstlisting}
 
 \subsubsection{Graph Reduction}
-This is all good in theory, but how does Haskell \textit{actually} evaluate a program? Under the hood, haskell uses graph reduction. Essentially, every expression and equation in Haskell is part of a large graph structure. Each vertex contains either a function which can be reduced, or an atomic value. To deal with sharing, each non-value vertex points to a placeholder vertex where the result will be stored, which i turn points to the expression. Therefore, \textit{sharing} is where two or more placeholder vertices point to the same expression.
+Under the hood, Haskell uses graph reduction to evaluate expressions. Essentially, every expression which is defined is part of a large graph structure. Vertices contains either a function which can be reduced, or an atomic value.
 
 \medskip
 \includegraphics[width=0.5\textwidth]{latex/assets/graph-reduction.png}
+
+To implement the concept of ``sharing'', each non-value vertex points to a placeholder vertex where the resulting value will be stored, which in turn points to the expression. Therefore, sharing is where two or more placeholder vertices point to the same expression.
+
+\medskip
 \includegraphics[width=0.5\textwidth]{latex/assets/graph-reduction-sharing.png}
 
 \subsection{Sharing}
-Possible due to lack of side effects, sharing results in any equivalent thunks only being evaluated once. This is done by \textit{memoising} evaluated thunks to avoid re-evaluation of equivalent thunks in the future.
+Possible due to lack of side effects, thunks which are equivalent need only be evaluated once and its value shared.
+This is done by memoising evaluated thunks to avoid re-evaluation of equivalent thunks in the future.
 
 \begin{lstlisting}[language=haskell]
 (1 + 1) + 2 + (1 + 1)
@@ -75,7 +82,7 @@ Possible due to lack of side effects, sharing results in any equivalent thunks o
 \end{lstlisting}
 
 \subsection{Normal Form}
-An expression is in a normal form iff it is fully evaluated (i.e. no further reductions can be applied).
+An expression is in a normal form if and only if it is fully evaluated (i.e. no further reductions can be applied).
 
 Examples:
 \begin{lstlisting}[language=haskell]
@@ -106,9 +113,9 @@ f = \x -> case x of
 \subsubsection{Weak Head Normal Form}
 An expression which is fully evaluated \textit{up to \textbf{at least}} the first data constructor. Values/equations in WHNF are:-
 \begin{enumerate}
-  \item A data constructor
-  \item A built-in function applied to too few arguments e.g. \texttt{(+ 2)}
-  \item A lambda expression
+  \item Data constructors
+  \item Built-in functions applied to too few arguments e.g. \texttt{(+ 2)}
+  \item Lambda expressions
 \end{enumerate}
 
 \begin{lstlisting}[language=haskell]

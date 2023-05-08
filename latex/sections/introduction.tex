@@ -5,16 +5,16 @@ Haskell is a purely functional programming language. The following sections will
 \subsection{Language Overview}
 In Haskell, everything is a \textit{pure} function - that is, they abide by the Mathematical definition of a function; they map inputs to a unique output.
 
-Data is immutable, meaning that our data types cannot be changed in-place. Combined, this means that there a re few or no side-effects from functions, which make programming more simple.
+Data is immutable, meaning that once defined, data cannot change. Combined, this means that there are no side-effects from functions, which make programming more simple, safe, and easier to debug.
 
 Haskell is declarative, meaning that the program defines what the issue is, rather than simply giving an algorithm to solve a problem.
 
-Functional programs are easier to verify as we can use maths to verify an algorithm.
+Functional programs are easy to verify as we can use maths to verify an algorithm.
 
 \subsection{Installation}
 Link: \url{https://www.haskell.org/ghcup/}
 
-I used GHCup to install several components of the Haskell toolchain.
+GHCup can be used to install several components of the Haskell toolchain.
 
 \subsubsection{The Haskell Toolchain}
 The Haskell Toolchain consists of several useful tools for Haskell compilatio and development:
@@ -32,8 +32,21 @@ The Haskell Toolchain consists of several useful tools for Haskell compilatio an
 \subsubsection{Install Command}
 The command to use on Windows (in a normal Powershell instance) is
 
-\input{latex/assets/latex-listings-powershell.tex}
-
-\begin{lstlisting}[language=PowerShell]
+\begin{lstlisting}
   Set-ExecutionPolicy Bypass -Scope Process -Force;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; try { Invoke-Command -ScriptBlock ([ScriptBlock]::Create((Invoke-WebRequest https://www.haskell.org/ghcup/sh/bootstrap-haskell.ps1 -UseBasicParsing))) -ArgumentList $true } catch { Write-Error $_ }
 \end{lstlisting}
+
+\subsection{Useful Links}
+\begin{itemize}
+  \item Hoogle (\url{https://hoogle.haskell.org/}). Search for the name and/or signature of a function or module to recieve information on it.
+  \item Hackage (\url{https://hackage.haskell.org/}). Haskell documentation.
+  \item PointFree.io (\url{https://pointfree.io/}). Convert a Haskell expression to a point-free version.
+  \item Haskell wiki (\url{https://wiki.haskell.org/Haskell}). Wikipedia for Haskell, contains in-depth docs and explanation of the Haskell language.
+  \item Haskell guide (\url{http://learnyouahaskell.com/}). Beginner's guide to Haskell.
+\end{itemize}
+
+Recommended YouTubers
+\begin{itemize}
+  \item \url{https://youtube.com/@philipphagenlocher} - ``Haskell for imperative programmers'' series
+  \item \url{https://www.youtube.com/c/Tsoding}
+\end{itemize}

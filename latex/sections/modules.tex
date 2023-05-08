@@ -51,6 +51,7 @@ E.g. \texttt{\blue{import} Prelude \texttt{hiding} (map)} would import every fun
 Let's say \texttt{\blue{data} DataType = A $\mid$ B $\mid$ C} is defined inside module \texttt{Module}.
 
 \begin{itemize}
+  \item To import only the type name but no constructors, we'd write \texttt{\blue{import} Module (DataType)}
   \item To import every constructor, we'd write \texttt{\blue{import} Module (DataType(..))}
   \item To import only constructor \texttt{A}, we'd write \texttt{\blue{import} Module (DataType(A))}
   \item To import constructors \texttt{A} and \texttt{B}, we'd write \texttt{\blue{import} Module (DataType(A,B))}

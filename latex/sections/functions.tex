@@ -1,11 +1,15 @@
 \section{Functions}
 
-Functions are defined to map a value from an input set - the \textit{domain} - into an output set - \textit{the co-domain}. Every output of the function is contained in a subset of the co-domain, called the \textit{range}. \textbf{Pure} mathematical functions must be able to map every value from the domain, and each input value must map to only one output value.
+Functions map a value from an input set - the \textit{domain} - to an output set - the \textit{co-domain}. Every output of the function is contained in a subset of the co-domain, called the \textit{range}.
+Functions are \textit{pure}, meaning
+\begin{itemize}
+  \item The function returns identical values for identical inputs (i.e. there is no variation due to local variables).
+  \item The function has no side-effects -- this is guaranteed due to data immutability.
+\end{itemize}
 
-In Haskell, occurences of functions are expanded into their RHS.
+In Haskell, occurences of functions are matched against patterns and expanded into their right-hand side.
 
 \subsection{Function Definition}
-
 Functions are defined by providing its name, a list of arguments, and setting it equal to an expression.
 
 \begin{center}
@@ -20,17 +24,17 @@ The type of a function is specified by an arrow (\texttt{->}) seperated list of 
   \texttt{\blue{func} :: \red{type$_1$} -> \red{type$_2$} -> \ldots -> \red{type$_n$} -> \red{type$_\text{return}$}}
 \end{center}
 
-For an example, take a function which returns the sum of the elements of an array:
+For an example, take a function which returns the sum of the elements of a list:
 
 \begin{lstlisting}[language=haskell]
-  sum :: [a] -> Int -- Takes an array of arbitrary type and returns an integer
-  sum [] = 0 -- Define the sum of an empty array to be zero
-  sum (h:t) = h + sum t -- Define the sum of an array to be the head plus the sum of the tail
+  sum :: [a] -> Int -- Takes a list of an arbitrary type and returns an integer
+  sum [] = 0 -- Define the sum of an empty list to be zero (base case)
+  sum (h:t) = h + sum t -- Define the sum of a list to be the head plus the sum of the tail
 \end{lstlisting}
 
 \subsubsection{Infix Functions}
 
-A good example of infix functions are operators such as \texttt{+}. Functions which take two arguments may be writen between the arguments instead.
+A good example of infix functions are operators such as \texttt{+}. Functions which take two arguments may be written between the arguments instead.
 
 For example, say we had \texttt{\blue{add} a b = a + b}. Then \texttt{\blue{add} 5 7} and \texttt{5 \;\textasciigrave\blue{add}\textasciigrave\; 7} are equivalent.
 
@@ -38,7 +42,7 @@ To reference the function defined by an operator i.e. \texttt{+}, surround it wi
 
 The associativity and precedence of infix operators may be changed via \texttt{\blue{infixr}/\blue{infixl} <prec> <function name>} where $0 < \texttt{prec} \le 9$.
 
-\subsubsection{Pattern Matching}
+\subsection{Pattern Matching}
 
 Parameters of functions may be matched against a pattern. Note that order matters: more specific patterns should be defined first, with general cases last.
 \begin{itemize}
@@ -50,7 +54,50 @@ Parameters of functions may be matched against a pattern. Note that order matter
   \item Accept and extract a custom datatype. E.g., say we had \texttt{\blue{data} Num = Zero | Succ Num}. We could then define \texttt{f Zero = ...} and \texttt{f (Succ n) = ...}.
 \end{itemize}
 
-Pattern matching may also be done using \texttt{\blue{case} ... \blue{of} ...} construct.
+\subsubsection{Top-Level}
+Patterns may be defined in the topmost level.
+\begin{lstlisting}[language=haskell]
+f :: ...
+f <pattern1> = <expr1>
+f <pattern2> = <expr2>
+...
+\end{lstlisting}
+
+\subsubsection{Guards}
+Guards resemble piecewise functions.
+\begin{lstlisting}[language=haskell]
+f :: ...
+f
+  | <pattern1> = <expr1>
+  | <pattern1> = <expr1>
+  ...
+  | otherwise = <expr_default> -- Catch-all
+\end{lstlisting}
+
+\subsubsection{Case Of}
+\begin{lstlisting}[language=haskell]
+case <expr> of
+  <pattern1> -> <expr1>
+  <pattern2> -> <expr2>
+  ...
+\end{lstlisting}
+
+\subsubsection{If-Else}
+Syntactic sugar, if-else expressions resemble conditional statements in other languages.
+\begin{lstlisting}[language=haskell]
+if <expr> then <ifTrue> else <ifFalse>
+\end{lstlisting}
+Elseif conditions may be constructed by chaining multiple if-else expressions after the else keyword.
+
+Using a language extension, multiple conditions may be listed without chaining if-else expressions.
+\begin{lstlisting}[language=haskell]
+{-# LANGUAGE MultiWayIf #-}
+if
+  | <cond1> -> <expr1>
+  | <cond2> -> <expr2>
+  ...
+  | otherwise -> <expr_default>
+\end{lstlisting}
 
 \subsection{Function Application}
 
@@ -60,55 +107,47 @@ A function is applied (called) to some arguments as follows:
   \texttt{\blue{name} arg1 arg2 \ldots argn}
 \end{center}
 
-For example, consider the function \texttt{\blue{in\_range} x min max = x >= min \&\& x < max}, an implementation of $x \in [min, max)$.
+For example, consider a function \texttt{in\_range} which implements $x \in [min, max)$.
+\begin{lstlisting}[language=haskell]
+-- Function definition
+in_range :: Int -> Int -> int -> Bool
+in_range x min max = x >= min && x < max
 
-Then, \texttt{\blue{in\_range} 3 0 5} would evaluate to True, but \texttt{\blue{in\_range} 5 0 5} would evaluate to False.
+-- Function application
+in_range 3 0 5 = True
+in_range 5 0 5 = False
+\end{lstlisting}
 
 \subsection{Recursion}
 Recursion is the process of a function calling itself. Recursion requires a \textit{base case} to stop the function recursing indefinitely.
 
-There are many ways to implement recursion, which will be demonstrated using the \textit{factorial}, defined as
+There are many ways to implement recursion, which will be demonstrated using the factorial function, defined as
 \[n! = n \cdot (n - 1) \cdot \ldots \cdot 1 = \prod_{k = 1}^{n} k\]
 
 \subsubsection{Defined Base Case}
 We can hard-code the case where the function is called with the base case:
 
 \begin{lstlisting}[language=haskell]
-  fac 1 = 1
-  fac n = n * fib (n-1) 
+fac :: Int -> Int
+fac 0 = 1
+fac 1 = 1
+fac n = n * fib (n-1) 
 \end{lstlisting}
 
 \subsubsection{If-Else Expression}
 We can use the if-else expression:
-
-\begin{center}
-  \texttt{\blue{if} <expr> \blue{then} <ifTrue> \blue{else} <ifFalse>}
-\end{center}
-
-For example,
-
 \begin{lstlisting}[language=haskell]
-  fac n = if n <= 1 then 1 else n * fac (n-1)
+fac :: Int -> Int
+fac n = if n <= 1 then 1 else n * fac (n-1)
 \end{lstlisting}
 
 \subsubsection{Guards}
 Guards are similar to piece-wise functions.
-
 \begin{lstlisting}[language=haskell]
-<main_expr>
-  | <expr> = <value>
-  | <expr2> = <value2>
-  ...
-  | otherwise = <default_value>
-\end{lstlisting}
-Where \texttt{<expr>} is a boolean expression. If \texttt{<expr>} is matches, then \texttt{<value>} will be returned. If none is matched, the \texttt{\blue{otherwise}} is returned.
-
-For example,
-
-\begin{lstlisting}[language=haskell]
-  fac n =
-    | n <= 1    = 1
-    | otherwise = n * fac (n-1)
+fac :: Int -> Int
+fac n =
+  | n <= 1    = 1
+  | otherwise = n * fac (n-1)
 \end{lstlisting}
 
 \subsubsection{Accumulators}
@@ -227,7 +266,7 @@ uncurry f (x,y) = f x y
 \end{lstlisting}
 
 \subsubsection{Partial Function Application}
-Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function; \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}. This is known as a \textit{section}.
+Using the last definition of \texttt{\blue{add}}, consider the result of \texttt{\blue{add} 1}. This would be a new function: \texttt{\blue{add} 1 :: \red{Int} -> \red{Int}}. This is known as a \textit{section}.
 
 A good example would be using \texttt{\blue{map}}.
 \begin{center}
@@ -244,6 +283,6 @@ Then, \texttt{(f.g)} is equivalent to \texttt{(\blue{\symbol{92}}x -> f (g x))}.
 For example, all three definitions of \texttt{\blue{descSort}} are equivalent:
 \begin{lstlisting}[language=haskell]
   descSort = reverse . sort
-  descSort = (\x -> reverse (sort x))
-  descSort = reverse (sort x)
+  descSort = \x -> reverse (sort x)
+  descSort x = reverse $ sort x
 \end{lstlisting}

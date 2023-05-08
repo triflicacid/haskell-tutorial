@@ -56,7 +56,7 @@ instance Num a => Monoid (Product a) where
 
 \end{lstlisting}
 
-\subsubsection{Foldable}
+\subsection{Foldable}
 A Foldable datatype is one which may be reduced to a single value i.e. folded in on itself.
 \begin{lstlisting}[language=haskell]
 class Foldable t where
@@ -118,7 +118,7 @@ pure id <*> v == v\end{lstlisting}
   \item \textbf{Homomorphism}: \begin{lstlisting}[language=haskell]
 pure f <*> pure x == pure (f x)\end{lstlisting}
   \item \textbf{Interchange}: \begin{lstlisting}[language=haskell]
-u * pure y == pure (\$ y) <*> u\end{lstlisting}
+u <*> pure y == pure (\$ y) <*> u\end{lstlisting}
   \item \textbf{Composition}: \begin{lstlisting}[language=haskell]
 pure (.) <*> u <*> v <*> w == u <*> (v <*> w)\end{lstlisting}
 \end{itemize}
