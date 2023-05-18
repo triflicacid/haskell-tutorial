@@ -67,3 +67,46 @@ instance Monad Either where
 \texttt{Either} can be used in place of \texttt{Maybe} for error handling.
 
 \texttt{Left} can represent failiure with the error type attached, and \texttt{Right} representing success with the result attached.
+
+\subsection{State}
+State is used to contain a computational context which can be preserved inside of it. It is defined as:
+\begin{lstlisting}[language=haskell]
+newtype State s a = State { runState :: s -> (s, a) }
+
+-- Constructor has the following signature:
+(s -> (s, a)) -> State s a
+\end{lstlisting}
+
+\paragraph{Instances}
+
+\begin{lstlisting}[language=haskell]
+instance Functor (State s) where
+  fmap = liftA
+
+instance Applicative (State s) where
+  pure x = State (\s -> (s, x))
+  ff <*> fa = do { f <- ff; a <- fa; pure (f a) }
+
+instance Monad (State s) where
+  mx >>= f = State $ \s -> let (s', x) = runState mx s
+    in runState (f x) s'
+
+  ma >> mb = State $ \s -> let (s', _) = runState ma s
+    in runState mb s'
+\end{lstlisting}
+
+\subsection{Environment Functor}
+
+As \texttt{(->)} is an operator at the type-level, we can partially apply it. E.g., \texttt{(->) a} is a function which accepts type \texttt{a}.
+
+\begin{lstlisting}[language=haskell]
+instance Functor ((->) r) where
+  fmap = (.)
+  -- f <$> g = \ r -> f (g r)
+
+instance Applicative ((->) r) where
+  f <*> g = \ r -> f r (g r)
+
+instance Monad ((->) r) where
+  g >>= f = \ r -> f (g r) r
+\end{lstlisting}

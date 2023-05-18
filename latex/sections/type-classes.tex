@@ -141,9 +141,9 @@ class Applicative m => Monad m where
 Any implementation must abide by these laws:
 \begin{itemize}
   \item \textbf{Left identity}: \begin{lstlisting}[language=haskell]
-return a >= h == h a\end{lstlisting}
+return a >>= h == h a\end{lstlisting}
   \item \textbf{Right identity}: \begin{lstlisting}[language=haskell]
-m >= return == m\end{lstlisting}
+m >>= return == m\end{lstlisting}
   \item \textbf{Associativity}: \begin{lstlisting}[language=haskell]
 (m >>= g) >>= h == m >>= (\x -> g x >>= h)\end{lstlisting}
 \end{itemize}
